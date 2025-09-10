@@ -42,9 +42,7 @@ class CSATPipeline:
             language=dialogue.language
         )
         
-        # Run multiple iterations
-        outputs = []
-        scores = []
+        outputs, scores = [], []
         
         for _ in range(self.num_iterations):
             try:
@@ -65,7 +63,7 @@ class CSATPipeline:
             if output and hasattr(output, 'golden_synthesis'):
                 all_golden_samples.extend(output.golden_synthesis)
         
-        # Select best explanation (closest to average)
+        # Select best explanation
         if outputs:
             best_idx = np.argmin(np.abs(np.array(scores) - average_score))
             best_explanation = outputs[best_idx].explanation if best_idx < len(outputs) else "No explanation"
@@ -95,57 +93,17 @@ class DatasetExperiment:
         self.num_iterations = num_iterations
         self.results = {}
     
-    def run_on_dataset(self, dataset_name: str, instruction_prompt: str, 
-                      rule_based_prompt: str = "", sample_size: Optional[int] = None, 
-                      verbose: bool = True):
-        """Run experiment on a dataset"""
-        # Load and sample data
-        dialogues = load_dataset(dataset_name)
-        if sample_size and sample_size < len(dialogues):
-            import random
-            random.seed(42)
-            dialogues = random.sample(dialogues, sample_size)
-        
-        if verbose:
-            print(f"\nProcessing {len(dialogues)} dialogues from {dataset_name}")
-        
-        # Run experiments for each model
-        for model in self.models:
-            if verbose:
-                print(f"Testing {model.model_name}...")
-            
-            pipeline = CSATPipeline(model, self.num_iterations)
-            model_results = []
-            
-            for i, dialogue in enumerate(dialogues):
-                if verbose and (i + 1) % 10 == 0:
-                    print(f"  Processed {i + 1}/{len(dialogues)}")
-                
-                result = pipeline.evaluate_dialogue(dialogue, instruction_prompt, rule_based_prompt)
-                model_results.append(result)
-            
-            # Store results
-            key = f"{model.model_name}_{dataset_name}"
-            self.results[key] = {
-                'model_name': model.model_name,
-                'dataset': dataset_name,
-                'results': model_results,
-                'metrics': self._calculate_metrics(model_results)
-            }
-    
     def run_on_dataset_with_progress(self, dataset_name: str, instruction_prompt: str, 
                                    rule_based_prompt: str = "", sample_size: Optional[int] = None, 
                                    verbose: bool = True, model: BaseCSATModel = None, 
                                    progress_callback=None):
         """Run experiment on a dataset with progress tracking"""
-        # Load and sample data
         dialogues = load_dataset(dataset_name)
         if sample_size and sample_size < len(dialogues):
             import random
             random.seed(42)
             dialogues = random.sample(dialogues, sample_size)
         
-        # If specific model provided, run only for that model
         models_to_run = [model] if model else self.models
         
         for current_model in models_to_run:
@@ -156,11 +114,9 @@ class DatasetExperiment:
                 result = pipeline.evaluate_dialogue(dialogue, instruction_prompt, rule_based_prompt)
                 model_results.append(result)
                 
-                # Call progress callback if provided
                 if progress_callback:
                     progress_callback()
             
-            # Store results
             key = f"{current_model.model_name}_{dataset_name}"
             self.results[key] = {
                 'model_name': current_model.model_name,
@@ -209,17 +165,15 @@ class DatasetExperiment:
         return pd.DataFrame(summary_data)
     
     def save_organized_results(self, output_dirs: Dict[str, str], plot: bool = False):
-        """Save results organized by model (ONLY method for saving)"""
+        """Save results organized by model"""
         for model_name, output_dir in output_dirs.items():
             output_path = Path(output_dir)
-            
-            # Filter results for this model
             model_results = {k: v for k, v in self.results.items() if v['model_name'] == model_name}
             
             if not model_results:
                 continue
             
-            # Save model-specific summary
+            # Save summary
             summary_data = []
             for key, result in model_results.items():
                 metrics = result['metrics']
@@ -235,16 +189,14 @@ class DatasetExperiment:
             if summary_data:
                 pd.DataFrame(summary_data).to_csv(output_path / "summary.csv", index=False)
             
-            # Save detailed results for each dataset
+            # Save detailed results
             for key, result in model_results.items():
                 dataset_name = result['dataset']
                 
-                # Save detailed text file
                 with open(output_path / f"{dataset_name}_detailed.txt", 'w', encoding='utf-8') as f:
                     f.write(f"Model: {model_name} | Dataset: {dataset_name}\n")
                     f.write("="*60 + "\n\n")
                     
-                    # Overall metrics
                     metrics = result['metrics']
                     f.write("Overall Performance:\n")
                     f.write(f"  Average Score: {metrics.get('avg_predicted_score', 0):.2f}\n")
@@ -254,7 +206,6 @@ class DatasetExperiment:
                     f.write(f"  Accuracy (±1): {metrics.get('accuracy_1', 0):.3f}\n")
                     f.write(f"  Variance: {metrics.get('avg_variance', 0):.3f}\n\n")
                     
-                    # Sample results
                     f.write(f"Sample Results ({len(result['results'])} total):\n")
                     f.write("-"*50 + "\n")
                     
@@ -274,7 +225,7 @@ class DatasetExperiment:
                         f.write(f"  Explanation: {r.final_explanation}\n")
                         f.write("  " + "-"*40 + "\n")
                 
-                # Save CSV for this dataset
+                # Save CSV
                 csv_data = []
                 for r in result['results']:
                     csv_data.append({
@@ -287,7 +238,7 @@ class DatasetExperiment:
                     })
                 pd.DataFrame(csv_data).to_csv(output_path / f"{dataset_name}_results.csv", index=False)
             
-            # Save complete model results as JSON
+            # Save JSON summary
             json_results = {}
             for key, result in model_results.items():
                 json_results[key] = {
@@ -300,7 +251,6 @@ class DatasetExperiment:
             with open(output_path / "experiment_summary.json", 'w', encoding='utf-8') as f:
                 json.dump(json_results, f, indent=2, ensure_ascii=False)
             
-            # Generate plots if requested
             if plot:
                 CSATAnalyzer.plot_model_results(self, model_name, str(output_path / "analysis_plots.png"))
             
@@ -317,13 +267,11 @@ class CSATAnalyzer:
             import matplotlib.pyplot as plt
             import seaborn as sns
             
-            # Filter results for this model
             model_results = {k: v for k, v in experiment.results.items() if v['model_name'] == model_name}
             
             if not model_results:
                 return
             
-            # Collect data
             all_predictions, all_ground_truths = [], []
             for key, result in model_results.items():
                 for r in result['results']:
@@ -334,7 +282,6 @@ class CSATAnalyzer:
             if not all_predictions:
                 return
             
-            # Create plots
             fig, axes = plt.subplots(2, 2, figsize=(12, 10))
             fig.suptitle(f'CSAT Results - {model_name}', fontsize=16)
             
@@ -382,3 +329,42 @@ class CSATAnalyzer:
             
         except ImportError:
             print("Install matplotlib and seaborn for plotting")
+    
+    @staticmethod
+    def generate_report(experiment: DatasetExperiment) -> str:
+        """Generate detailed text report"""
+        report = [
+            "=" * 80,
+            "CSAT EVALUATION EXPERIMENT REPORT",
+            "=" * 80,
+            f"Generated at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+            "",
+            "SUMMARY STATISTICS",
+            "-" * 40,
+            experiment.get_summary().to_string(),
+            ""
+        ]
+        
+        for key, result in experiment.results.items():
+            report.extend([
+                f"\n{'='*60}",
+                f"Model: {result['model_name']} | Dataset: {result['dataset']}",
+                f"{'='*60}",
+                "\nMetrics:"
+            ])
+            
+            for metric_name, value in result['metrics'].items():
+                if isinstance(value, float):
+                    report.append(f"  {metric_name}: {value:.4f}")
+            
+            report.append("\nSample Predictions (first 3):")
+            for i, r in enumerate(result['results'][:3]):
+                report.extend([
+                    f"\n  Sample {i+1}:",
+                    f"    Predicted: {r.average_score:.2f}",
+                    f"    Ground Truth: {r.ground_truth:.2f}" if r.ground_truth else "    Ground Truth: N/A",
+                    f"    Variance: {r.variance:.3f}",
+                    f"    Explanation: {r.final_explanation[:100]}..."
+                ])
+        
+        return "\n".join(report)
