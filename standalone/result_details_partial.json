@@ -1,0 +1,1332 @@
+{
+  "1": {
+    "dialogue_id": 1,
+    "ground_truth_100": 50.5,
+    "ground_truth_5": 3.0,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "System asked relevant follow-ups but failed to synthesize user preferences into deeper insights or actionable recommendations."
+      },
+      "Helpfulness": {
+        "score": 45,
+        "justification": "Questions were on-topic but repetitive and lacked proactive value; did not guide the conversation toward meaningful exploration."
+      },
+      "Accuracy": {
+        "score": 70,
+        "justification": "Responses were factually correct, though some user statements were incomplete or vague, limiting precision."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized key themes like story-driven plots but missed opportunities to clarify ambiguous user remarks (e.g., 'I don't know')."
+      },
+      "Empathy": {
+        "score": 50,
+        "justification": "Polite but showed minimal emotional attunement; no validation of user's mixed feelings about movies or personal reflections."
+      },
+      "Fluency": {
+        "score": 70,
+        "justification": "Utterances were mostly natural and coherent, though some phrasing was awkward or truncated (e.g., 'I don't know I guess')."
+      },
+      "OverallExperience": {
+        "score": 58,
+        "justification": "Weighted average = (0.4*50) + (0.15*45) + (0.15*70) + (0.1*60) + (0.1*55) + (0.1*70) = 58.3 \u2192 rounded to 58."
+      }
+    }
+  },
+  "3": {
+    "dialogue_id": 3,
+    "ground_truth_100": 50.5,
+    "ground_truth_5": 3.0,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "System gathered basic preferences but failed to synthesize insights or guide deeper exploration of user interests like history, documentaries, or assertive female characters."
+      },
+      "Helpfulness": {
+        "score": 45,
+        "justification": "Asked relevant questions but did not leverage user's stated interests (e.g., WWII, learning) to offer tailored recommendations or follow-up insights."
+      },
+      "Accuracy": {
+        "score": 80,
+        "justification": "No factual errors; responses aligned with user input without misrepresentation, though depth was lacking."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized key themes like interest in history and dislike of horror, but repeated generic prompts suggest limited adaptive understanding."
+      },
+      "Empathy": {
+        "score": 55,
+        "justification": "Acknowledged user input politely but did not validate emotional stance on horror or connect to broader preferences like curiosity about conflict origins."
+      },
+      "Fluency": {
+        "score": 75,
+        "justification": "Utterances were grammatically correct and natural, with smooth transitions between topics despite some repetition."
+      },
+      "OverallExperience": {
+        "score": 55,
+        "justification": "Weighted average = (0.4*50) + (0.15*45) + (0.15*80) + (0.1*60) + (0.1*55) + (0.1*75) = 55.25 \u2192 rounded to 55."
+      }
+    }
+  },
+  "2": {
+    "dialogue_id": 2,
+    "ground_truth_100": 56.69,
+    "ground_truth_5": 3.25,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "System gathered basic genre preferences and some movie examples, but failed to probe deeper or synthesize insights despite user's nuanced input on themes like war, technology, and director influence."
+      },
+      "Helpfulness": {
+        "score": 45,
+        "justification": "Asked relevant questions initially, but later shifted to irrelevant movies (The Accountant, Pulp Fiction) without connecting them to user\u2019s stated interests in anti-war themes and Kubrick\u2019s work."
+      },
+      "Accuracy": {
+        "score": 85,
+        "justification": "No factual errors; responses aligned with user input, though depth was limited by shallow engagement."
+      },
+      "Understanding": {
+        "score": 70,
+        "justification": "Recognized key preferences like Kubrick and anti-war films but missed opportunities to connect them meaningfully."
+      },
+      "Empathy": {
+        "score": 65,
+        "justification": "Acknowledged user input politely but did not validate emotional tone or engage with personal critiques like 'pretentious' director remarks."
+      },
+      "Fluency": {
+        "score": 80,
+        "justification": "Natural and smooth delivery, though some phrasing was repetitive (e.g., repeated 'have you seen...')."
+      },
+      "OverallExperience": {
+        "score": 65,
+        "justification": "Weighted average = (0.4*60) + (0.15*55) + (0.15*85) + (0.1*70) + (0.1*65) + (0.1*80) = 65.3 \u2192 rounded to 65."
+      }
+    }
+  },
+  "7": {
+    "dialogue_id": 7,
+    "ground_truth_100": 56.69,
+    "ground_truth_5": 3.25,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 70,
+        "justification": "System gathered basic preferences and examples, but failed to deepen exploration of user's nuanced views on films like Paddington 2 and Spartan."
+      },
+      "Helpfulness": {
+        "score": 65,
+        "justification": "Asked relevant follow-ups but offered no proactive insight or synthesis of user\u2019s emotional connection to films like Paddington 2."
+      },
+      "Accuracy": {
+        "score": 90,
+        "justification": "All factual references were correct; no errors in movie or director names mentioned by the user."
+      },
+      "Understanding": {
+        "score": 80,
+        "justification": "Recognized key preferences (e.g., action, Die Hard) and connected The Martian to similar themes, showing good contextual grasp."
+      },
+      "Empathy": {
+        "score": 75,
+        "justification": "Acknowledged user\u2019s comment about joy in a cynical climate with 'Interesting,' showing mild emotional attunement."
+      },
+      "Fluency": {
+        "score": 90,
+        "justification": "Utterances were natural and fluent, with smooth transitions between questions and responses."
+      },
+      "OverallExperience": {
+        "score": 76,
+        "justification": "Weighted average = (0.4*75)+(0.15*65)+(0.15*90)+(0.1*80)+(0.1*70)+(0.1*90) = 76.3 \u2192 rounded to 76."
+      }
+    }
+  },
+  "9": {
+    "dialogue_id": 9,
+    "ground_truth_100": 58.75,
+    "ground_truth_5": 3.33,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 60,
+        "justification": "Gathered basic preferences but failed to explore deeper connections between user's interests in comedies, Denzel Washington, and action films like The Equalizer."
+      },
+      "Helpfulness": {
+        "score": 55,
+        "justification": "Asked relevant follow-ups but did not synthesize insights or offer tailored suggestions based on user's unique taste in overlooked comedies and actor preferences."
+      },
+      "Accuracy": {
+        "score": 85,
+        "justification": "No factual errors; responses aligned with user input without misrepresentation or incorrect claims."
+      },
+      "Understanding": {
+        "score": 70,
+        "justification": "Recognized key preferences (comedies, Denzel Washington) but missed opportunity to probe deeper into why the user values authenticity or emotional resonance in film."
+      },
+      "Empathy": {
+        "score": 65,
+        "justification": "Polite tone maintained, but did not validate user\u2019s appreciation for overlooked films like Baywatch or express shared enthusiasm for emotional depth in acting."
+      },
+      "Fluency": {
+        "score": 90,
+        "justification": "Utterances were natural and grammatically correct, though the conversation ended prematurely without closure or reflection."
+      },
+      "OverallExperience": {
+        "score": 68,
+        "justification": "Weighted average = round(0.4*65 + 0.15*60 + 0.15*85 + 0.1*70 + 0.1*65 + 0.1*90) = round(67.75) = 68."
+      }
+    }
+  },
+  "15": {
+    "dialogue_id": 15,
+    "ground_truth_100": 58.75,
+    "ground_truth_5": 3.33,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 60,
+        "justification": "Gathered user preferences on art house, horror, and weird films, but failed to explore them deeply or synthesize insights. Asked redundant questions like 'why do you like' after already receiving explanations."
+      },
+      "Helpfulness": {
+        "score": 55,
+        "justification": "Asked relevant follow-ups initially but repeated questions unnecessarily. Did not offer recommendations or connect user's interests meaningfully."
+      },
+      "Accuracy": {
+        "score": 85,
+        "justification": "No factual errors in references; correctly identified 'The Fall' and 'The Martian' as mentioned by the user."
+      },
+      "Understanding": {
+        "score": 70,
+        "justification": "Recognized key genres and examples but missed opportunities to link 'The Fall' with cinematography and symbolism, and did not follow up on user\u2019s critique of 'The Martian'."
+      },
+      "Empathy": {
+        "score": 65,
+        "justification": "Acknowledged user input politely but did not validate or reflect on emotional tone, such as boredom with comedies or slow pacing of 'The Martian'."
+      },
+      "Fluency": {
+        "score": 90,
+        "justification": "Utterances were natural and fluent, with smooth transitions between questions and minimal repetition."
+      },
+      "OverallExperience": {
+        "score": 69,
+        "justification": "Weighted average = (0.4*60)+(0.15*55)+(0.15*85)+(0.1*70)+(0.1*65)+(0.1*90) = 69.25 \u2192 rounded to 69."
+      }
+    }
+  },
+  "10": {
+    "dialogue_id": 10,
+    "ground_truth_100": 67.0,
+    "ground_truth_5": 3.67,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 75,
+        "justification": "Gathered core preferences (comedy love, Hallmark dislike) and explored related films, but failed to synthesize insights or offer tailored recommendations."
+      },
+      "Helpfulness": {
+        "score": 70,
+        "justification": "Asked relevant follow-ups about liked/disliked movies, but the final question about Jurassic World was off-topic and not grounded in user's stated interests."
+      },
+      "Accuracy": {
+        "score": 90,
+        "justification": "No factual errors; all references to films and genres were correct and consistent with user input."
+      },
+      "Understanding": {
+        "score": 80,
+        "justification": "Correctly identified user's preference for comedy and aversion to Hallmark films, though missed opportunity to connect original Jurassic Park to potential interest in Jurassic World."
+      },
+      "Empathy": {
+        "score": 85,
+        "justification": "Validated user\u2019s feelings about Hallmark movies and showed engagement through reflective statements like 'That's exactly right.'"
+      },
+      "Fluency": {
+        "score": 90,
+        "justification": "Natural, smooth dialogue flow with minimal repetition and clear phrasing throughout the exchange."
+      },
+      "OverallExperience": {
+        "score": 80,
+        "justification": "Weighted average = (0.4*75)+(0.15*70)+(0.15*90)+(0.1*80)+(0.1*85)+(0.1*90) = 80.25 \u2192 80."
+      }
+    }
+  },
+  "20": {
+    "dialogue_id": 20,
+    "ground_truth_100": 67.0,
+    "ground_truth_5": 3.67,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "System gathered basic genre preferences and some movie examples, but failed to probe deeper or synthesize insights despite clear cues about user interests."
+      },
+      "Helpfulness": {
+        "score": 55,
+        "justification": "Asked relevant follow-ups but offered no synthesis, recommendations, or value-added insights despite user's interest in cerebral action films."
+      },
+      "Accuracy": {
+        "score": 80,
+        "justification": "No factual errors; responses aligned with user input without misrepresentation."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized key genres and preferences but repeatedly asked redundant questions instead of adapting to user's depth of response."
+      },
+      "Empathy": {
+        "score": 50,
+        "justification": "Polite tone but lacked emotional acknowledgment or validation of user\u2019s enthusiasm for action/horror films."
+      },
+      "Fluency": {
+        "score": 75,
+        "justification": "Natural and grammatically correct utterances, though some phrasing was overly simplistic or repetitive."
+      },
+      "OverallExperience": {
+        "score": 68,
+        "justification": "Weighted average = (0.4*60) + (0.15*55) + (0.15*85) + (0.1*70) + (0.1*65) + (0.1*90) = 68.2 \u2192 rounded to 68."
+      }
+    }
+  },
+  "13": {
+    "dialogue_id": 13,
+    "ground_truth_100": 62.88,
+    "ground_truth_5": 3.5,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 70,
+        "justification": "Gathered core preferences and examples, but failed to synthesize insights or suggest relevant recommendations based on user's interests."
+      },
+      "Helpfulness": {
+        "score": 65,
+        "justification": "Asked relevant follow-ups but provided no proactive value or personalized suggestions despite clear genre preferences."
+      },
+      "Accuracy": {
+        "score": 90,
+        "justification": "All responses were factually accurate with no errors; minor deduction for lack of depth in engagement."
+      },
+      "Understanding": {
+        "score": 80,
+        "justification": "Correctly tracked user\u2019s preferred genres and reasons, though missed opportunities to connect themes like 'lone agent' and 'space western'."
+      },
+      "Empathy": {
+        "score": 70,
+        "justification": "Polite tone maintained, but did not acknowledge or validate the user's enthusiasm for specific films or disinterest in romance."
+      },
+      "Fluency": {
+        "score": 90,
+        "justification": "Responses were natural and fluent, with smooth transitions, though some prompts felt repetitive without adaptation."
+      },
+      "OverallExperience": {
+        "score": 73,
+        "justification": "Weighted average = (0.4*70)+(0.15*65)+(0.15*90)+(0.1*80)+(0.1*70)+(0.1*90) = 73.2 \u2192 rounded to 73."
+      }
+    }
+  },
+  "29": {
+    "dialogue_id": 29,
+    "ground_truth_100": 62.88,
+    "ground_truth_5": 3.5,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 75,
+        "justification": "Gathered clear genre preferences and examples, but failed to explore deeper patterns or offer tailored suggestions."
+      },
+      "Helpfulness": {
+        "score": 70,
+        "justification": "Asked relevant follow-ups but did not synthesize insights or provide value-added recommendations based on user's desire to escape drama."
+      },
+      "Accuracy": {
+        "score": 85,
+        "justification": "No factual errors; all questions were contextually appropriate and responses aligned with user input."
+      },
+      "Understanding": {
+        "score": 80,
+        "justification": "Correctly identified key preferences (comedy, documentaries) and motivations (learning, escaping drama), though missed nuance in emotional context."
+      },
+      "Empathy": {
+        "score": 80,
+        "justification": "Acknowledged user\u2019s desire to escape life drama with a validating tone, showing emotional attunement to stated needs."
+      },
+      "Fluency": {
+        "score": 90,
+        "justification": "Natural, fluent exchanges with smooth transitions; minor repetition in questioning doesn\u2019t hinder clarity."
+      },
+      "OverallExperience": {
+        "score": 77,
+        "justification": "Weighted average = round(0.4*75 + 0.15*70 + 0.15*85 + 0.1*80 + 0.1*75 + 0.1*90) = round(76.75) = 77."
+      }
+    }
+  },
+  "14": {
+    "dialogue_id": 14,
+    "ground_truth_100": 69.06,
+    "ground_truth_5": 3.75,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 60,
+        "justification": "System gathered basic preferences but failed to explore deeper themes or synthesize insights from user's nuanced feedback on film structure and tone."
+      },
+      "Helpfulness": {
+        "score": 55,
+        "justification": "Asked relevant questions but offered no value-added follow-up or tailored suggestions based on user's critiques of pacing and maturity level."
+      },
+      "Accuracy": {
+        "score": 85,
+        "justification": "No factual errors; responses aligned with user's stated opinions and movie details."
+      },
+      "Understanding": {
+        "score": 70,
+        "justification": "Recognized key preferences (historical/war films) but missed nuanced critiques like narrative structure and tone mismatch in Dunkirk."
+      },
+      "Empathy": {
+        "score": 65,
+        "justification": "Polite and responsive, but did not validate user\u2019s mixed feelings about Dunkirk or acknowledge emotional depth in war film appreciation."
+      },
+      "Fluency": {
+        "score": 80,
+        "justification": "Natural phrasing with minimal repetition; minor issues with awkward transitions between questions."
+      },
+      "OverallExperience": {
+        "score": 70,
+        "justification": "Weighted average = (0.4*65) + (0.15*60) + (0.15*85) + (0.1*70) + (0.1*65) + (0.1*80) = 70.25 \u2192 rounded to 70."
+      }
+    }
+  },
+  "115": {
+    "dialogue_id": 115,
+    "ground_truth_100": 69.06,
+    "ground_truth_5": 3.75,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 75,
+        "justification": "System gathered user preferences and examples of liked/disliked movies with reasons, but failed to synthesize insights or offer personalized recommendations."
+      },
+      "Helpfulness": {
+        "score": 70,
+        "justification": "Asked relevant follow-ups but did not leverage user's feedback to provide meaningful suggestions or deeper engagement."
+      },
+      "Accuracy": {
+        "score": 90,
+        "justification": "Responses were factually correct and consistent with user input; no errors in movie titles or genre descriptions."
+      },
+      "Understanding": {
+        "score": 80,
+        "justification": "Correctly interpreted user's likes and dislikes, including nuanced critiques about character use and storytelling in Die Hard 5."
+      },
+      "Empathy": {
+        "score": 75,
+        "justification": "Acknowledged user input politely but lacked emotional validation or reflection on the disappointment expressed about Die Hard 5."
+      },
+      "Fluency": {
+        "score": 90,
+        "justification": "Utterances were natural and fluent, with smooth transitions between questions and minimal repetition."
+      },
+      "OverallExperience": {
+        "score": 80,
+        "justification": "Weighted average = (0.4*75) + (0.15*70) + (0.15*90) + (0.1*80) + (0.1*75) + (0.1*95) = 80, reflecting strong performance across core dimensions with minor gaps in depth and empathy."
+      }
+    }
+  },
+  "16": {
+    "dialogue_id": 16,
+    "ground_truth_100": 44.31,
+    "ground_truth_5": 2.75,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "Collected basic preferences and examples but failed to synthesize insights or guide deeper exploration of user's interests."
+      },
+      "Helpfulness": {
+        "score": 40,
+        "justification": "Repeatedly asked about unseen movies without adapting to user's stated lack of interest or viewing history."
+      },
+      "Accuracy": {
+        "score": 70,
+        "justification": "No factual errors, but responses lacked depth and failed to leverage user's expressed preferences effectively."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized genre preferences but did not connect them to meaningful follow-ups despite clear cues like love for dragons and magic."
+      },
+      "Empathy": {
+        "score": 50,
+        "justification": "Polite but offered no emotional acknowledgment or validation of user\u2019s enthusiasm for favorites like The Matrix or Harry Potter."
+      },
+      "Fluency": {
+        "score": 80,
+        "justification": "Utterances were mostly natural and coherent, though some repetition and abrupt transitions reduced flow."
+      },
+      "OverallExperience": {
+        "score": 55,
+        "justification": "Weighted average = (0.4*50) + (0.15*40) + (0.15*70) + (0.1*60) + (0.1*50) + (0.1*80) = 55, reflecting moderate engagement with notable gaps in personalization."
+      }
+    }
+  },
+  "41": {
+    "dialogue_id": 41,
+    "ground_truth_100": 44.31,
+    "ground_truth_5": 2.75,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "Gathered basic preferences but failed to resolve contradiction between disliking Titanic and liking superhero movies, despite user's clear genre preference shift."
+      },
+      "Helpfulness": {
+        "score": 40,
+        "justification": "Asked repetitive questions without synthesizing information or offering relevant recommendations based on evolving preferences."
+      },
+      "Accuracy": {
+        "score": 70,
+        "justification": "No factual errors; responses were consistent with user input, though some prompts lacked precision."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized user's mention of superhero movies but did not reconcile the earlier rejection of Titanic as non-comedy, indicating incomplete context tracking."
+      },
+      "Empathy": {
+        "score": 50,
+        "justification": "Responses were neutral and transactional; lacked emotional validation when user expressed disinterest in certain genres."
+      },
+      "Fluency": {
+        "score": 80,
+        "justification": "Natural, fluent language use with minimal awkwardness; questions flowed smoothly despite task gaps."
+      },
+      "OverallExperience": {
+        "score": 65,
+        "justification": "Weighted average = (0.4*60)+(0.15*55)+(0.15*70)+(0.1*65)+(0.1*60)+(0.1*80) = 65.2 \u2192 rounded to 65."
+      }
+    }
+  },
+  "18": {
+    "dialogue_id": 18,
+    "ground_truth_100": 31.94,
+    "ground_truth_5": 2.25,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 75,
+        "justification": "System gathered user preferences and examples of liked/disliked movies, but failed to synthesize insights or offer tailored recommendations."
+      },
+      "Helpfulness": {
+        "score": 75,
+        "justification": "Asked targeted questions that elicited detailed feedback, but provided no synthesis or recommendations based on insights."
+      },
+      "Accuracy": {
+        "score": 90,
+        "justification": "Responses were factually correct with no errors; used appropriate terminology for film genres and franchises."
+      },
+      "Understanding": {
+        "score": 80,
+        "justification": "Tracked user inputs well, including genre preferences and specific critiques, though missed opportunities to connect themes like 'story quality' across films."
+      },
+      "Empathy": {
+        "score": 70,
+        "justification": "Acknowledged user\u2019s enthusiasm but lacked emotional validation for disappointment in A Good Day to Die Hard or excitement about Mission: Impossible."
+      },
+      "Fluency": {
+        "score": 90,
+        "justification": "Utterances were natural and fluent, with smooth transitions between questions, though the final goodbye was abrupt."
+      },
+      "OverallExperience": {
+        "score": 80,
+        "justification": "Weighted average = (0.4*80)+(0.15*75)+(0.15*90)+(0.1*85)+(0.1*70)+(0.1*90) = 80.25 \u2192 80."
+      }
+    }
+  },
+  "70": {
+    "dialogue_id": 70,
+    "ground_truth_100": 31.94,
+    "ground_truth_5": 2.25,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 40,
+        "justification": "System repeatedly asked about unseen movies without probing deeper into user preferences, failing to build a meaningful profile."
+      },
+      "Helpfulness": {
+        "score": 35,
+        "justification": "Questions were generic and did not adapt to user's limited engagement or expressed interests; offered no value-added insights."
+      },
+      "Accuracy": {
+        "score": 70,
+        "justification": "No factual errors, but the system continued probing irrelevant films despite user's clear disinterest in certain genres."
+      },
+      "Understanding": {
+        "score": 50,
+        "justification": "Repeatedly asked about movies the user had never seen, indicating poor tracking of prior responses and lack of contextual awareness."
+      },
+      "Empathy": {
+        "score": 55,
+        "justification": "Polite tone but showed no emotional attunement; ignored user\u2019s hesitation and lack of engagement with new titles."
+      },
+      "Fluency": {
+        "score": 70,
+        "justification": "Responses are grammatically correct and flow naturally, though repetitive phrasing reduces conversational quality."
+      },
+      "OverallExperience": {
+        "score": 40,
+        "justification": "Weighted average = (0.4*40)+(0.15*35)+(0.15*65)+(0.1*50)+(0.1*55)+(0.1*70) = 40.25 \u2192 rounded to 40."
+      }
+    }
+  },
+  "24": {
+    "dialogue_id": 24,
+    "ground_truth_100": 65.35,
+    "ground_truth_5": 3.6,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 75,
+        "justification": "System gathered core preferences (action, superhero, comedy) and explored dislikes, but failed to synthesize insights or recommend tailored content."
+      },
+      "Helpfulness": {
+        "score": 70,
+        "justification": "Asked relevant follow-ups about favorites and dislikes, but provided no proactive recommendations or deeper engagement with user's cultural reflections."
+      },
+      "Accuracy": {
+        "score": 90,
+        "justification": "All responses were factually correct and aligned with user input; no errors in movie references or genre descriptions."
+      },
+      "Understanding": {
+        "score": 80,
+        "justification": "Recognized key themes like cultural depth in Black Panther and user\u2019s nuanced views on horror saturation, though missed opportunities for deeper exploration."
+      },
+      "Empathy": {
+        "score": 75,
+        "justification": "Acknowledged user's nostalgia and humor (e.g., 'McLovin'), showing mild emotional attunement without deep validation of personal reflections."
+      },
+      "Fluency": {
+        "score": 90,
+        "justification": "Responses were natural, conversational, and grammatically smooth, with effective use of casual tone matching user style."
+      },
+      "OverallExperience": {
+        "score": 78,
+        "justification": "Weighted average = (0.4*75) + (0.15*70) + (0.15*90) + (0.1*80) + (0.1*75) + (0.1*90) = 78.3, rounded to 78."
+      }
+    }
+  },
+  "326": {
+    "dialogue_id": 326,
+    "ground_truth_100": 65.35,
+    "ground_truth_5": 3.6,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "System gathered basic preferences but failed to explore user's dislikes in depth or synthesize insights; asked repetitive questions and ended abruptly."
+      },
+      "Helpfulness": {
+        "score": 45,
+        "justification": "Asked relevant initial questions but offered no proactive recommendations or value-added follow-up despite clear user interests."
+      },
+      "Accuracy": {
+        "score": 85,
+        "justification": "All factual claims (e.g., movie year, rating) were correct; minor deduction for lack of context in responses."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized user's genre preferences but missed opportunities to connect related themes, such as emotional arcs in romantic comedies."
+      },
+      "Empathy": {
+        "score": 55,
+        "justification": "Acknowledged user input politely but did not validate frustrations about pointless films or show emotional attunement."
+      },
+      "Fluency": {
+        "score": 80,
+        "justification": "Natural and coherent speech patterns; minor awkwardness in transitions between topics, but overall fluent."
+      },
+      "OverallExperience": {
+        "score": 62,
+        "justification": "Weighted average = (0.4*50) + (0.15*55) + (0.15*85) + (0.1*60) + (0.1*70) + (0.1*80) = 62.3 \u2192 rounded to 62."
+      }
+    }
+  },
+  "136": {
+    "dialogue_id": 136,
+    "ground_truth_100": 75.25,
+    "ground_truth_5": 4.0,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "Gathered basic genre preferences and examples, but failed to explore user's criteria for enjoyment in depth or synthesize insights."
+      },
+      "Helpfulness": {
+        "score": 40,
+        "justification": "Asked relevant questions initially but later veered into off-topic movie suggestions without adapting to user's stated disinterest in children's fantasy."
+      },
+      "Accuracy": {
+        "score": 70,
+        "justification": "No factual errors, but responses lacked precision in connecting user's preferences to meaningful recommendations."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized genre preferences but missed the nuance that user dislikes 'children's movies' within sci-fi/fantasy, leading to irrelevant follow-ups."
+      },
+      "Empathy": {
+        "score": 50,
+        "justification": "Acknowledged user input politely but did not validate or reflect on their stated demographic mismatch with Harry Potter."
+      },
+      "Fluency": {
+        "score": 80,
+        "justification": "Utterances were natural and conversational, though some prompts felt repetitive or disjointed after initial engagement."
+      },
+      "OverallExperience": {
+        "score": 50,
+        "justification": "Weighted average = (0.4*50) + (0.15*40) + (0.15*70) + (0.1*60) + (0.1*50) + (0.1*80) = 50.5 \u2192 rounded to 50."
+      }
+    }
+  },
+  "202": {
+    "dialogue_id": 202,
+    "ground_truth_100": 25.75,
+    "ground_truth_5": 2.0,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 40,
+        "justification": "System repeatedly asked for movie examples without probing deeper into user preferences, leading to shallow and repetitive exchanges."
+      },
+      "Helpfulness": {
+        "score": 35,
+        "justification": "Questions were generic and did not adapt to user's stated interests; failed to explore emotional or thematic depth in responses."
+      },
+      "Accuracy": {
+        "score": 65,
+        "justification": "No factual errors detected, but the system introduced irrelevant films (e.g., 'The Other Side of the Wind') without relevance to user\u2019s profile."
+      },
+      "Understanding": {
+        "score": 50,
+        "justification": "Misaligned with user\u2019s genre preferences\u2014asked about horror and sci-fi films despite user focusing on comedy and action humor."
+      },
+      "Empathy": {
+        "score": 40,
+        "justification": "Failed to acknowledge or respond to emotional cues like enjoyment of 'gruesome scenes' or 'feel-good stories' with empathy."
+      },
+      "Fluency": {
+        "score": 70,
+        "justification": "Responses are grammatically correct and flow naturally, though overly repetitive and lacking conversational variation."
+      },
+      "OverallExperience": {
+        "score": 40,
+        "justification": "Weighted average = (0.4*40) + (0.15*35) + (0.15*65) + (0.1*50) + (0.1*40) + (0.1*70) = 40, aligning with poor user satisfaction."
+      }
+    }
+  },
+  "32": {
+    "dialogue_id": 32,
+    "ground_truth_100": 45.55,
+    "ground_truth_5": 2.8,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "Gathered basic preferences but failed to resolve contradictions (e.g., initial dislike of romance vs. later enthusiasm) and did not follow up on incomplete responses like 'I didn't like.'"
+      },
+      "Helpfulness": {
+        "score": 45,
+        "justification": "Asked relevant questions but offered no synthesis or value-added insight despite user's mixed signals about genre preferences."
+      },
+      "Accuracy": {
+        "score": 75,
+        "justification": "No factual errors; responses aligned with user input where provided, though some follow-ups were redundant."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized surface-level preferences but failed to reconcile conflicting statements about romance movies and ignored incomplete answers."
+      },
+      "Empathy": {
+        "score": 55,
+        "justification": "Polite tone maintained, but failed to acknowledge user\u2019s hesitation or difficulty recalling a disliked movie with patience or encouragement."
+      },
+      "Fluency": {
+        "score": 80,
+        "justification": "Utterances are natural and grammatically correct, with only minor pauses and repetitions affecting flow slightly."
+      },
+      "OverallExperience": {
+        "score": 58,
+        "justification": "Weighted average = (0.4*50)+(0.15*45)+(0.15*70)+(0.1*60)+(0.1*50)+(0.1*75) = 58.2 \u2192 rounded to 58."
+      }
+    }
+  },
+  "40": {
+    "dialogue_id": 40,
+    "ground_truth_100": 45.55,
+    "ground_truth_5": 2.8,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 70,
+        "justification": "Gathered basic preferences but failed to explore deeper insights or synthesize feedback into meaningful recommendations."
+      },
+      "Helpfulness": {
+        "score": 65,
+        "justification": "Asked relevant follow-ups but did not leverage user's comments on humor, action fatigue, or character depth for proactive suggestions."
+      },
+      "Accuracy": {
+        "score": 85,
+        "justification": "No factual errors; responses aligned with user input and genre descriptions."
+      },
+      "Understanding": {
+        "score": 80,
+        "justification": "Recognized key themes like sarcasm in Deadpool and human flaws in The Incredibles, though missed deeper emotional cues."
+      },
+      "Empathy": {
+        "score": 75,
+        "justification": "Acknowledged user sentiment about repetitive action films and loudness, showing mild emotional attunement without deep validation."
+      },
+      "Fluency": {
+        "score": 85,
+        "justification": "Natural, conversational flow with minimal awkwardness; questions were clear and well-structured."
+      },
+      "OverallExperience": {
+        "score": 76,
+        "justification": "Weighted average: 0.4*70 + 0.15*65 + 0.15*90 + 0.1*80 + 0.1*75 + 0.1*90 = 76.3 \u2192 rounded to 76."
+      }
+    }
+  },
+  "35": {
+    "dialogue_id": 35,
+    "ground_truth_100": 42.25,
+    "ground_truth_5": 2.67,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "System asked for specific examples and reasons but failed to guide the user effectively, leading to repetitive and shallow responses."
+      },
+      "Helpfulness": {
+        "score": 45,
+        "justification": "Questions were relevant but lacked depth or follow-up to build meaningful insight; did not adapt based on user's preferences."
+      },
+      "Accuracy": {
+        "score": 70,
+        "justification": "No factual errors, but responses were generic and did not reflect accurate interpretation of user\u2019s nuanced interests."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized genre preferences but repeatedly asked for clarification without synthesizing prior inputs."
+      },
+      "Empathy": {
+        "score": 50,
+        "justification": "Acknowledged user's interest but showed no emotional engagement; ignored cues like excitement about character uniqueness or change in tone."
+      },
+      "Fluency": {
+        "score": 70,
+        "justification": "Natural phrasing overall, though some prompts felt robotic and repetitive."
+      },
+      "OverallExperience": {
+        "score": 58,
+        "justification": "Weighted average = (0.4*50) + (0.15*40) + (0.15*70) + (0.1*60) + (0.1*50) + (0.1*70) = 58.5 \u2192 rounded to 58."
+      }
+    }
+  },
+  "46": {
+    "dialogue_id": 46,
+    "ground_truth_100": 42.25,
+    "ground_truth_5": 2.67,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "Collected basic preferences and reasons for liking/disliking movies, but failed to synthesize insights or adapt questions based on user's action-movie focus."
+      },
+      "Helpfulness": {
+        "score": 40,
+        "justification": "Asked repetitive yes/no questions about unseen films, ignoring user\u2019s stated genre preferences and offering no value-added recommendations."
+      },
+      "Accuracy": {
+        "score": 80,
+        "justification": "No factual errors in references; all prompts were linguistically correct and appropriate in isolation."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized user\u2019s interest in action films but failed to leverage that insight, instead asking about unrelated genres (e.g., comedy, drama)."
+      },
+      "Empathy": {
+        "score": 50,
+        "justification": "Polite but lacked emotional engagement; did not acknowledge user\u2019s enthusiasm for action or validate their taste."
+      },
+      "Fluency": {
+        "score": 70,
+        "justification": "Responses were grammatically correct and natural, though the questioning pattern became monotonous and less conversational."
+      },
+      "OverallExperience": {
+        "score": 55,
+        "justification": "Weighted average = (0.4*50) + (0.15*40) + (0.15*80) + (0.1*60) + (0.1*50) + (0.1*70) = 55, reflecting moderate experience with missed opportunities."
+      }
+    }
+  },
+  "37": {
+    "dialogue_id": 37,
+    "ground_truth_100": 35.65,
+    "ground_truth_5": 2.4,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 70,
+        "justification": "System gathered user preferences and examples of liked/disliked movies, but failed to synthesize insights or offer tailored recommendations despite rich input."
+      },
+      "Helpfulness": {
+        "score": 65,
+        "justification": "Asked relevant follow-ups but provided no proactive value, such as suggesting similar films or connecting themes across user's examples."
+      },
+      "Accuracy": {
+        "score": 90,
+        "justification": "Responses were factually accurate with no errors; correctly referenced film titles and genres mentioned by the user."
+      },
+      "Understanding": {
+        "score": 80,
+        "justification": "Recognized key themes like Shakespeare adaptations and diversity in film, but missed deeper connections between user\u2019s preferences."
+      },
+      "Empathy": {
+        "score": 75,
+        "justification": "Validated user\u2019s feelings about disliked films with acknowledgment, though response to 'No' was minimal and lacked emotional depth."
+      },
+      "Fluency": {
+        "score": 90,
+        "justification": "Utterances were natural, grammatically sound, and conversational, with smooth transitions between topics."
+      },
+      "OverallExperience": {
+        "score": 75,
+        "justification": "Weighted average = (0.4*70) + (0.15*65) + (0.15*85) + (0.1*80) + (0.1*75) + (0.1*90) = 75.25 \u2192 rounded to 75."
+      }
+    }
+  },
+  "213": {
+    "dialogue_id": 213,
+    "ground_truth_100": 35.65,
+    "ground_truth_5": 2.4,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 70,
+        "justification": "Gathered core preferences across genres and specific examples, but failed to follow up on the user's excitement about 'Crazy Rich Asians' with deeper engagement."
+      },
+      "Helpfulness": {
+        "score": 65,
+        "justification": "Asked relevant questions but missed opportunities to recommend similar films based on user\u2019s '90s/early 2000s' nostalgia or connect to upcoming movie interest."
+      },
+      "Accuracy": {
+        "score": 85,
+        "justification": "All responses were factually correct and aligned with user input; no errors in genre or film references."
+      },
+      "Understanding": {
+        "score": 75,
+        "justification": "Recognized key preferences (romance, comedy, drama) and dislikes (horror, superhero action), but did not fully leverage the user's emotional connection to actors and nostalgia."
+      },
+      "Empathy": {
+        "score": 70,
+        "justification": "Polite closing tone, but did not acknowledge the user\u2019s expressed excitement about watching 'Crazy Rich Asians' with enthusiasm."
+      },
+      "Fluency": {
+        "score": 90,
+        "justification": "Utterances were natural and fluent, with smooth transitions between questions and minimal repetition."
+      },
+      "OverallExperience": {
+        "score": 79,
+        "justification": "Weighted average = (0.4*75) + (0.15*80) + (0.15*90) + (0.1*85) + (0.1*70) + (0.1*90) = 79.25 \u2192 rounded to 79."
+      }
+    }
+  },
+  "53": {
+    "dialogue_id": 53,
+    "ground_truth_100": 30.7,
+    "ground_truth_5": 2.2,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 65,
+        "justification": "Gathered user preferences for action and superhero movies, including specific examples and reasons, but failed to explore deeper connections or synthesize insights."
+      },
+      "Helpfulness": {
+        "score": 60,
+        "justification": "Asked relevant follow-ups but offered no proactive recommendations or value-added insights despite rich input from the user."
+      },
+      "Accuracy": {
+        "score": 85,
+        "justification": "Responses were factually correct and consistent with user statements; no errors in movie references or genre descriptions."
+      },
+      "Understanding": {
+        "score": 70,
+        "justification": "Recognized key themes like charisma in dialogue and emotional ties to films, but missed opportunities to probe deeper into user's personal connection to superhero concepts."
+      },
+      "Empathy": {
+        "score": 75,
+        "justification": "Acknowledged user sentiment with phrases like 'yeah, I see what u mean' and responded warmly to personal memories, showing basic emotional attunement."
+      },
+      "Fluency": {
+        "score": 90,
+        "justification": "Utterances were natural and conversational, with smooth flow despite minor informal language and punctuation issues."
+      },
+      "OverallExperience": {
+        "score": 73,
+        "justification": "Weighted average = (0.4*65) + (0.15*60) + (0.15*85) + (0.1*70) + (0.1*75) + (0.1*90) = 73.25 \u2192 rounded to 73."
+      }
+    }
+  },
+  "407": {
+    "dialogue_id": 407,
+    "ground_truth_100": 30.7,
+    "ground_truth_5": 2.2,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "System gathered basic preferences but failed to explore user's reasons deeply or synthesize insights; repeated prompts reduced engagement."
+      },
+      "Helpfulness": {
+        "score": 45,
+        "justification": "Asked relevant questions but offered no value-added recommendations or follow-up based on user's stated dislikes."
+      },
+      "Accuracy": {
+        "score": 85,
+        "justification": "Responses were factually correct and consistent with user input; no errors detected."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized genre preferences but did not fully connect user\u2019s dislike of 'Pi' to broader pattern of disliking confusing narratives."
+      },
+      "Empathy": {
+        "score": 50,
+        "justification": "Polite but failed to validate user\u2019s difficulty following certain films or acknowledge their preference for clarity."
+      },
+      "Fluency": {
+        "score": 85,
+        "justification": "Natural, fluent language use with smooth transitions; minor repetition in questioning does not impair clarity."
+      },
+      "OverallExperience": {
+        "score": 69,
+        "justification": "Weighted average = (0.4*60) + (0.15*55) + (0.15*85) + (0.1*70) + (0.1*65) + (0.1*85) = 69.3 \u2192 rounded to 69."
+      }
+    }
+  },
+  "78": {
+    "dialogue_id": 78,
+    "ground_truth_100": 55.45,
+    "ground_truth_5": 3.2,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 65,
+        "justification": "Gathered basic preferences and examples, but failed to synthesize insights or explore deeper connections between user's likes and dislikes."
+      },
+      "Helpfulness": {
+        "score": 60,
+        "justification": "Asked relevant questions but offered no proactive recommendations or value-added follow-ups based on user\u2019s stated tastes."
+      },
+      "Accuracy": {
+        "score": 85,
+        "justification": "No factual errors; all movie references were correctly acknowledged and responded to appropriately."
+      },
+      "Understanding": {
+        "score": 70,
+        "justification": "Tracked user input on genre and specific films but missed opportunities to connect themes like 'entertainment' and 'keeping interest'."
+      },
+      "Empathy": {
+        "score": 65,
+        "justification": "Polite and engaged, but did not validate emotional cues like frustration with 'Cheerleader Ninjas' or excitement about classics."
+      },
+      "Fluency": {
+        "score": 80,
+        "justification": "Natural-sounding prompts with smooth flow, though some repetition in questioning reduced conversational efficiency."
+      },
+      "OverallExperience": {
+        "score": 69,
+        "justification": "Weighted average = (0.4*65) + (0.15*60) + (0.15*85) + (0.1*70) + (0.1*65) + (0.1*80) = 69.25 \u2192 rounded to 69."
+      }
+    }
+  },
+  "93": {
+    "dialogue_id": 93,
+    "ground_truth_100": 55.45,
+    "ground_truth_5": 3.2,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 70,
+        "justification": "Gathered core preferences (superhero movies, Deadpool favorites) but failed to deepen insights or synthesize key themes like humor, tone, or character appeal."
+      },
+      "Helpfulness": {
+        "score": 65,
+        "justification": "Asked relevant follow-ups but offered no personalized recommendations despite user\u2019s openness to new films like Superbad."
+      },
+      "Accuracy": {
+        "score": 85,
+        "justification": "No factual errors; responses aligned with user input without misrepresentation."
+      },
+      "Understanding": {
+        "score": 75,
+        "justification": "Recognized mood-based preferences and genre contrasts, though missed deeper cues like the user\u2019s mixed feelings about Twilight."
+      },
+      "Empathy": {
+        "score": 70,
+        "justification": "Acknowledged user\u2019s opinion on Twilight with neutrality but did not validate or explore their personal experience with the series."
+      },
+      "Fluency": {
+        "score": 85,
+        "justification": "Natural, conversational flow with smooth transitions; minor repetition in questioning slightly reduced clarity."
+      },
+      "OverallExperience": {
+        "score": 74,
+        "justification": "Weighted average = (0.4*70)+(0.15*65)+(0.15*85)+(0.1*75)+(0.1*70)+(0.1*85) = 74.3 \u2192 rounded to 74."
+      }
+    }
+  },
+  "138": {
+    "dialogue_id": 138,
+    "ground_truth_100": 60.4,
+    "ground_truth_5": 3.4,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "System gathered basic preferences but repeatedly asked redundant questions, failing to deepen insights or synthesize information effectively."
+      },
+      "Helpfulness": {
+        "score": 40,
+        "justification": "Asked repetitive follow-ups without adapting to user's stated interests; offered no recommendations or value-added exploration."
+      },
+      "Accuracy": {
+        "score": 85,
+        "justification": "No factual errors; all film references were correct and appropriately labeled."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized user's preference for classics but failed to connect related themes or adapt questioning accordingly."
+      },
+      "Empathy": {
+        "score": 50,
+        "justification": "Acknowledged user's opinion on Tom Cruise but did not validate or explore emotional tone beyond a brief comment."
+      },
+      "Fluency": {
+        "score": 90,
+        "justification": "Responses were natural and grammatically fluent, though some prompts felt mechanical and repetitive."
+      },
+      "OverallExperience": {
+        "score": 64,
+        "justification": "Weighted average = (0.4*60) + (0.15*50) + (0.15*85) + (0.1*70) + (0.1*60) + (0.1*90) = 64.2 \u2192 rounded to 64."
+      }
+    }
+  },
+  "169": {
+    "dialogue_id": 169,
+    "ground_truth_100": 60.4,
+    "ground_truth_5": 3.4,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 65,
+        "justification": "Gathered basic preferences for comedies and specific films, but failed to explore deeper insights or synthesize user's emotional motivations."
+      },
+      "Helpfulness": {
+        "score": 60,
+        "justification": "Asked relevant follow-ups but provided no value-added recommendations or connections between liked films like Bridesmaids and Crazy Rich Asians."
+      },
+      "Accuracy": {
+        "score": 80,
+        "justification": "No factual errors; responses aligned with user input without misrepresentation, though depth was limited."
+      },
+      "Understanding": {
+        "score": 70,
+        "justification": "Recognized key preferences and followed up on disliked films, but missed opportunities to connect themes like inclusiveness in Crazy Rich Asians."
+      },
+      "Empathy": {
+        "score": 75,
+        "justification": "Acknowledged user\u2019s positive feelings about films like Crazy Rich Asians with appropriate tone, showing some emotional attunement."
+      },
+      "Fluency": {
+        "score": 90,
+        "justification": "Utterances were natural and fluent, with only minor awkward phrasing in a few responses."
+      },
+      "OverallExperience": {
+        "score": 73,
+        "justification": "Weighted average = (0.4*65) + (0.15*60) + (0.15*85) + (0.1*70) + (0.1*75) + (0.1*90) = 72.75 \u2192 rounded to 73."
+      }
+    }
+  },
+  "150": {
+    "dialogue_id": 150,
+    "ground_truth_100": 38.12,
+    "ground_truth_5": 2.5,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "System gathered basic genre preferences and examples, but failed to explore reasons deeply or synthesize insights; ended abruptly without closure."
+      },
+      "Helpfulness": {
+        "score": 40,
+        "justification": "Questions were relevant but repetitive and lacked follow-up depth; no proactive recommendations or value-added synthesis."
+      },
+      "Accuracy": {
+        "score": 80,
+        "justification": "Responses were factually accurate with no errors; however, the dialogue remained superficial in exploration."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Tracked user's genre preferences but missed opportunities to connect deeper emotional or thematic motivations behind likes/dislikes."
+      },
+      "Empathy": {
+        "score": 50,
+        "justification": "Polite tone but failed to acknowledge user's stated boredom or disengagement with certain genres on a personal level."
+      },
+      "Fluency": {
+        "score": 85,
+        "justification": "Natural, fluent language with smooth transitions, though some prompts were repetitive."
+      },
+      "OverallExperience": {
+        "score": 64,
+        "justification": "Weighted average = (0.4*60) + (0.15*55) + (0.15*80) + (0.1*70) + (0.1*50) + (0.1*85) = 64.2 \u2192 64"
+      }
+    }
+  },
+  "152": {
+    "dialogue_id": 152,
+    "ground_truth_100": 38.12,
+    "ground_truth_5": 2.5,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "Gathered basic genre preferences and examples, but failed to probe deeper or synthesize insights from user responses."
+      },
+      "Helpfulness": {
+        "score": 40,
+        "justification": "Questions were repetitive and did not adapt to user's limited elaboration; offered no value-added suggestions or follow-up."
+      },
+      "Accuracy": {
+        "score": 80,
+        "justification": "Responses were factually accurate with no errors; minor deductions for lack of depth in probing."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized user input but repeated prompts without adjusting to sparse or vague replies."
+      },
+      "Empathy": {
+        "score": 50,
+        "justification": "Polite but showed no emotional attunement to user\u2019s lack of enthusiasm or effort in describing preferences."
+      },
+      "Fluency": {
+        "score": 85,
+        "justification": "Utterances were natural and fluent, with minimal awkwardness or repetition across the dialogue."
+      },
+      "OverallExperience": {
+        "score": 65,
+        "justification": "Weighted average = (0.4*60) + (0.15*55) + (0.15*80) + (0.1*70) + (0.1*65) + (0.1*85) = 65.2 \u2192 rounded to 65."
+      }
+    }
+  },
+  "163": {
+    "dialogue_id": 163,
+    "ground_truth_100": 40.6,
+    "ground_truth_5": 2.6,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 75,
+        "justification": "System gathered basic preferences and examples, but failed to synthesize insights or explore deeper connections between user's likes (e.g., animation, character-driven stories)."
+      },
+      "Helpfulness": {
+        "score": 70,
+        "justification": "Asked relevant follow-ups but offered no proactive recommendations or value-added exploration of user\u2019s stated interests in animation and music."
+      },
+      "Accuracy": {
+        "score": 90,
+        "justification": "Responses were factually correct and aligned with user input; no errors in movie references or genre descriptions."
+      },
+      "Understanding": {
+        "score": 80,
+        "justification": "Recognized user\u2019s preference for realistic animation and dislike of sci-fi fiction, but missed opportunities to connect themes like storytelling depth and relatability."
+      },
+      "Empathy": {
+        "score": 75,
+        "justification": "Acknowledged user sentiment with 'I can understand that' and validated preferences, showing basic emotional attunement."
+      },
+      "Fluency": {
+        "score": 90,
+        "justification": "Utterances were natural, smooth, and well-structured, with only minor repetition in questioning style."
+      },
+      "OverallExperience": {
+        "score": 82,
+        "justification": "Weighted average = (0.4*75) + (0.15*70) + (0.15*90) + (0.1*80) + (0.1*85) + (0.1*90) = 82.3, rounded to 82."
+      }
+    }
+  },
+  "273": {
+    "dialogue_id": 273,
+    "ground_truth_100": 40.6,
+    "ground_truth_5": 2.6,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "Gathered basic genre preferences and examples, but failed to synthesize insights or explore deeper connections between user's interests."
+      },
+      "Helpfulness": {
+        "score": 45,
+        "justification": "Asked relevant follow-ups but provided no proactive recommendations or value-added synthesis of user's stated tastes."
+      },
+      "Accuracy": {
+        "score": 70,
+        "justification": "No factual errors, but responses lacked depth and failed to adapt to user\u2019s nuanced critiques of Adam Sandler\u2019s evolution."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized key preferences but repeated questions without adapting to user's evolving input, especially around romance and action."
+      },
+      "Empathy": {
+        "score": 55,
+        "justification": "Polite but lacked validation of user\u2019s strong opinions about romance films being 'waste of time'."
+      },
+      "Fluency": {
+        "score": 85,
+        "justification": "Natural and smooth dialogue flow with minimal awkwardness, though some repetition occurred."
+      },
+      "OverallExperience": {
+        "score": 65,
+        "justification": "Weighted average = (0.4*65) + (0.15*60) + (0.15*80) + (0.1*70) + (0.1*55) + (0.1*85) = 65.25 \u2192 rounded to 65."
+      }
+    }
+  },
+  "191": {
+    "dialogue_id": 191,
+    "ground_truth_100": 34.0,
+    "ground_truth_5": 2.33,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "System asked relevant initial questions but failed to follow up on user's emotional connection to 'The Wild' and abandoned exploration of disliked movies after partial input."
+      },
+      "Helpfulness": {
+        "score": 45,
+        "justification": "Initial prompts were appropriate, but later questions about Titanic were irrelevant given user\u2019s stated dislike of romantic content and lack of engagement with the topic."
+      },
+      "Accuracy": {
+        "score": 70,
+        "justification": "No factual errors, but responses lacked contextual alignment with user\u2019s expressed preferences and emotional tone."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized genre preferences but missed cues in user\u2019s fragmented statements about emotional impact and relationship themes."
+      },
+      "Empathy": {
+        "score": 50,
+        "justification": "Polite closing but no validation of user\u2019s feelings about films or acknowledgment of their emotional investment in stories."
+      },
+      "Fluency": {
+        "score": 70,
+        "justification": "Utterances were grammatically correct and natural, though some prompts felt repetitive and disjointed."
+      },
+      "OverallExperience": {
+        "score": 58,
+        "justification": "Weighted average = (0.4*50) + (0.15*45) + (0.15*70) + (0.1*60) + (0.1*50) + (0.1*75) = 58.3 \u2192 rounded to 58."
+      }
+    }
+  },
+  "254": {
+    "dialogue_id": 254,
+    "ground_truth_100": 34.0,
+    "ground_truth_5": 2.33,
+    "model_evaluation": {
+      "TaskSuccess": {
+        "score": 50,
+        "justification": "System asked for a specific movie and reason, but failed to follow up on user's preference for smarter comedies or Chevy Chase's subtle humor."
+      },
+      "Helpfulness": {
+        "score": 40,
+        "justification": "Asked about unrelated movies (The Greatest Showman, Guardians of the Galaxy) despite user\u2019s clear genre disinterest and lack of engagement with them."
+      },
+      "Accuracy": {
+        "score": 70,
+        "justification": "No factual errors, but recommendations were misaligned with user\u2019s stated preferences for intelligent, non-offensive humor."
+      },
+      "Understanding": {
+        "score": 60,
+        "justification": "Recognized user\u2019s preference for 'smarter' movies but failed to connect it to meaningful follow-up questions or synthesis."
+      },
+      "Empathy": {
+        "score": 50,
+        "justification": "Did not acknowledge user\u2019s critique of offensive comedy or validate their appreciation for subtle humor."
+      },
+      "Fluency": {
+        "score": 70,
+        "justification": "Utterances were grammatically correct and natural, though some repetition (e.g., asking 'did you watch?' after confirming knowledge) reduced conversational flow."
+      },
+      "OverallExperience": {
+        "score": 55,
+        "justification": "Weighted average = (0.4*50) + (0.15*40) + (0.15*70) + (0.1*60) + (0.1*50) + (0.1*80) = 55, reflecting moderate satisfaction with missed opportunities."
+      }
+    }
+  }
+}

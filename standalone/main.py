@@ -417,60 +417,93 @@ def dialogue_to_prompt_format(dialogue: dict, include_overall: bool = False) -> 
 
 def full_poc():
     dialogues = load_dialogue_dataset("selected_dialogues.json")
-    for i in tqdm(range(len(dialogues))):
-        if dialogues[i]["dialogue_id"] in SAMPLES_IDS:
-            print(f"Exclude sample dialogues in prompt i={i}")
+    summary_results = []      # For result.json (compact)
+    detailed_results = {}     # For result_details.json (full breakdown)
+    
+    api_key = os.getenv("QWEN_API_KEY")
+    if not api_key:
+        raise ValueError("Please set QWEN_API_KEY environment variable.")
+    client = openai.OpenAI(api_key=api_key, base_url=BASE_URL.strip())
+
+    for dial in tqdm(dialogues, desc="Processing dialogues"):
+        dialogue_id = dial["dialogue_id"]
+        
+        if dialogue_id in SAMPLES_IDS:
+            print(f"Exclude sample dialogue (id={dialogue_id}) from evaluation")
             continue
 
-        processed_dial = dialogue_to_prompt_format(dialogues[i])
+        processed_dial = dialogue_to_prompt_format(dial, include_overall=False)
+        full_prompt = PROMPT_TEMPLATE.replace("{{dialogue_transcript}}", processed_dial.strip())
 
-        full_prompt = PROMPT_TEMPLATE.replace("{dialogue_transcript}", processed_dial.strip())
-
-        # Setup API
-        api_key = os.getenv("QWEN_API_KEY")
-        if not api_key:
-            raise ValueError("Please set QWEN_API_KEY environment variable.")
-        
-        client = openai.OpenAI(api_key=api_key, base_url=BASE_URL.strip())
         valid_responses = []
+        attempts = 0
+        max_attempts = NUM_ITER + 5
 
-        print(f"Running {NUM_ITER} iteration (temp={TEMPERATURE})...\n")
+        print(f"\nEvaluating dialogue {dialogue_id}...")
 
-        i = 0
-        for i in tqdm(range(NUM_ITER)):
+        while len(valid_responses) < NUM_ITER and attempts < max_attempts:
             try:
                 resp = client.chat.completions.create(
                     model=MODEL,
                     messages=[{"role": "user", "content": full_prompt}],
                     temperature=TEMPERATURE,
                     max_tokens=MAX_TOKEN,
-                    n=1, # dashscope only support n=[1,4]
+                    n=1,
                 )
                 raw = resp.choices[0].message.content.strip()
                 parsed = extract_json_response(raw)
                 
                 if parsed:
                     valid_responses.append(parsed)
-                    print(f"[{i+1:02d}] ✅ Valid JSON")
+                    print(f"  ✅ Got valid response ({len(valid_responses)}/{NUM_ITER})")
                 else:
-                    print(f"[{i+1:02d}] ❌ Invalid JSON")
-                    print(f"    Snippet: {raw[:150]}...")
-                    i -= 1 # retry
+                    print(f"  ❌ Invalid JSON (attempt {attempts + 1})")
                     
             except Exception as e:
-                print(f"[{i+1:02d}] ❌ Error: {e}")
+                print(f"  ❌ API Error (attempt {attempts + 1}): {e}")
+            
+            attempts += 1
 
-        if not valid_responses:
-            raise RuntimeError("No valid JSON responses received.")
+        # Initialize default result
+        final_result = None
+        model_score = None
 
-        print(f"\n✅ Got {len(valid_responses)} valid responses. Aggregating...")
+        if valid_responses:
+            final_result = aggregate_scores(valid_responses)
+            model_score = final_result.get("OverallExperience", {}).get("score")
 
-        final_result = aggregate_scores(valid_responses)
-        
-        print("\n" + "="*50)
-        print("FINAL AGGREGATED EVALUATION")
-        print("="*50)
-        print(json.dumps(final_result, indent=2))
+        # --- Save to compact summary (result.json) ---
+        summary_results.append({
+            "dialogue_id": dialogue_id,
+            "average_score_100": dial.get("average_score_100", 0.0),
+            "model_score": model_score
+        })
+
+        # --- Save full details (result_details.json) ---
+        detailed_results[dialogue_id] = {
+            "dialogue_id": dialogue_id,
+            "ground_truth_100": dial.get("average_score_100", 0.0),
+            "ground_truth_5": dial.get("average_score", 0.0),
+            "model_evaluation": final_result  # This is the full dict with all categories
+        }
+
+        # Optional: save intermediate results
+        with open("result_partial.json", "w") as f:
+            json.dump(summary_results, f, indent=2)
+        with open("result_details_partial.json", "w") as f:
+            json.dump(detailed_results, f, indent=2)
+
+    # Final save
+    with open("result.json", "w") as f:
+        json.dump(summary_results, f, indent=2)
+    
+    with open("result_details.json", "w") as f:
+        json.dump(detailed_results, f, indent=2)
+    
+    print(f"\n✅ Evaluation complete!")
+    print(f"   Summary saved to: result.json")
+    print(f"   Full details saved to: result_details.json")
+    print(f"   Total dialogues evaluated: {len(summary_results)}")
 
 if __name__ == "__main__":
     # single_poc()
