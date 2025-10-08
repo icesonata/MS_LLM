@@ -9,15 +9,50 @@ import os
 import re
 from collections import Counter
 import openai  # uses OpenAI-compatible Qwen API endpoint
+from typing import List, Any, Dict
+from tqdm import tqdm
 
 MODEL = "qwen3-30b-a3b-instruct-2507"
 BASE_URL = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
 TEMPERATURE = 0.7
 NUM_ITER = 3
-K = 5
+# K = 5
+MAX_TOKEN = 2048
+SAMPLES_IDS = {335, 25, 26}
 
 # Reasoning problem
 PROMPT_TEMPLATE = """
+=== INSTRUCTION (Read carefully) ===
+You are an expert human-like evaluator. Given a dialogue transcript, produce a single JSON object that scores the conversation on six categories and an OverallExperience value (0-100). Use the chain-of-thought (CoT) to *inform* each category's justification, but keep the justifications concise and structured.
+
+OUTPUT RULES (must follow exactly)
+1. Output **only** a single valid JSON object — no extra text, no commentary, no markdown.
+2. Each category score must be an integer from 0 to 100.
+3. Each category must include a "justification" string of 1–3 short sentences (concise CoT: state the key observations that led to the score).
+4. OverallExperience must equal the weighted average (rounded to nearest integer) using these weights:
+   - TaskSuccess: 40%
+   - Helpfulness: 15%
+   - Accuracy: 15%
+   - Understanding: 10%
+   - Empathy: 10%
+   - Fluency: 10%
+   Compute OverallExperience = round(0.4*TaskSuccess + 0.15*Helpfulness + 0.15*Accuracy + 0.1*Understanding + 0.1*Empathy + 0.1*Fluency)
+5. No additional fields allowed. The JSON keys must be exactly:
+   "TaskSuccess","Helpfulness","Accuracy","Understanding","Empathy","Fluency","OverallExperience"
+6. Keep numeric values as integers, and justifications short (1-3 sentences). If you use examples to help you reason, do not print them — only the final JSON.
+
+CoT GUIDELINES (how to think & what to write)
+- Internally, think step-by-step about what the system did: Did it ask relevant questions? Did it synthesize user info? Did it adapt emotionally?
+- For each category justification, state 2–3 crisp observations (these are short CoT breadcrumbs), e.g. "Asked follow-ups X and Y; failed to synthesize preferences into recommendations."
+- Do NOT output your full chain-of-thought trace — only include the short justifications requested above.
+
+SCORE RANGE & STYLE
+- 90–100: excellent (meets goals, proactive)
+- 70–89: good (meets most goals with minor misses)
+- 50–69: fair (some important misses)
+- 30–49: poor (misses many core goals)
+- 0–29: very poor (fails task or harmful)
+
 === FEW-SHOT EXAMPLES ===
 (Example 1 — dialogue_id 335) 
 SYSTEM           	Can you tell me what types of movies you like?          	OTHER
@@ -187,15 +222,15 @@ Expected:
 === Dialogue ===
 {{dialogue_transcript}}
 
-Output JSON for this run:
+=== Output JSON (ONLY) ===
 {
- "TaskSuccess": {"score": 40, "justification": "Interaction is repetitive and yields limited actionable content."},
- "Helpfulness": {"score": 40, "justification": "Prompts are generic and do not improve depth."},
- "Accuracy": {"score": 60, "justification": "No explicit contradictions, but information is shallow."},
- "Understanding": {"score": 60, "justification": "Some repeated prompts suggest partial understanding."},
- "Empathy": {"score": 60, "justification": "Polite but not empathetic."},
- "Fluency": {"score": 60, "justification": "Understandable but only moderately fluent."},
- "OverallExperience": {"score": 40, "justification": "Weighted average rounds to 40 per specified mapping."}
+  "TaskSuccess": {"score": 40, "justification": "Interaction is repetitive and yields limited actionable content."},
+  "Helpfulness": {"score": 40, "justification": "Prompts are generic and do not improve depth."},
+  "Accuracy": {"score": 60, "justification": "No explicit contradictions, but information is shallow."},
+  "Understanding": {"score": 60, "justification": "Some repeated prompts suggest partial understanding."},
+  "Empathy": {"score": 60, "justification": "Polite but not empathetic."},
+  "Fluency": {"score": 60, "justification": "Understandable but only moderately fluent."},
+  "OverallExperience": {"score": 40, "justification": "Weighted average rounds to 40 per specified mapping."}
 }
 """
 
@@ -267,7 +302,7 @@ def aggregate_scores(responses):
     
     return result
 
-def main():
+def single_poc():
     # --- Input: your dialogue here ---
     dialogue_transcript = """
 SYSTEM	What kinds of movies do you like?	OTHER	
@@ -296,7 +331,6 @@ SYSTEM	What is it about this kinds of movies that you like or dislike?	OTHER
 USER	A Pulp Fiction is great. It just got this it's wonderfully violent, it's humorous, the cast is fantastic. Well if you're you got the same objection and principles as in it I think I might they made the first time they were together were they were also in Die Hard from together they they worked great together. And just add little sub stories in in Pulp Fiction make just a fantastic film.	ENTITY_NAME+MOVIE_OR_SERIES	3,3,3,3
 SYSTEM	Wonderful. thank you for sharing. Good bye.	OTHER	
 USER	Goodbye.	OTHER	2,3,3,3
-USER	OVERALL	OTHER	3,4,3,3
 """
     
     # Inject dialogue
@@ -312,14 +346,15 @@ USER	OVERALL	OTHER	3,4,3,3
 
     print(f"Running {NUM_ITER} iteration (temp={TEMPERATURE})...\n")
 
-    for i in range(NUM_ITER):
+    i = 0
+    while i < NUM_ITER:
         try:
             resp = client.chat.completions.create(
                 model=MODEL,
                 messages=[{"role": "user", "content": full_prompt}],
                 temperature=TEMPERATURE,
-                max_tokens=1024,
-                n=1,
+                max_tokens=MAX_TOKEN,
+                n=1, # dashscope only support n=[1,4]
             )
             raw = resp.choices[0].message.content.strip()
             parsed = extract_json_response(raw)
@@ -327,6 +362,7 @@ USER	OVERALL	OTHER	3,4,3,3
             if parsed:
                 valid_responses.append(parsed)
                 print(f"[{i+1:02d}] ✅ Valid JSON")
+                i += 1
             else:
                 print(f"[{i+1:02d}] ❌ Invalid JSON")
                 print(f"    Snippet: {raw[:150]}...")
@@ -346,5 +382,96 @@ USER	OVERALL	OTHER	3,4,3,3
     print("="*50)
     print(json.dumps(final_result, indent=2))
 
+def load_dialogue_dataset(file_path: str) -> List[Dict[str, Any]]:
+    with open(file_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+    return data['dialogues']
+
+def dialogue_to_prompt_format(dialogue: dict, include_overall: bool = False) -> str:
+    lines = []
+    
+    # Process each turn
+    for turn in dialogue['turns']:
+        speaker = turn['speaker']
+        text = turn['text'].replace('\t', ' ').replace('\n', ' ')  # Clean whitespace
+        intent = turn['intent']
+        
+        if speaker == 'SYSTEM':
+            # SYSTEM lines: speaker, text, intent (no scores)
+            lines.append(f"SYSTEM\t{text}\t{intent}")
+        else:  # USER
+            if turn['scores'] is not None:
+                # USER lines with scores: speaker, text, intent, scores_csv
+                scores_csv = ','.join(map(str, turn['scores']))
+                lines.append(f"USER\t{text}\t{intent}\t{scores_csv}")
+            else:
+                # USER lines without scores (rare, but possible)
+                lines.append(f"USER\t{text}\t{intent}")
+    
+    # Only add OVERALL line if explicitly requested
+    if include_overall and 'overall_scores' in dialogue and dialogue['overall_scores']:
+        overall_csv = ','.join(map(str, dialogue['overall_scores']))
+        lines.append(f"USER\tOVERALL\tOTHER\t{overall_csv}")
+    
+    return '\n'.join(lines)
+
+def full_poc():
+    dialogues = load_dialogue_dataset("selected_dialogues.json")
+    for i in tqdm(range(len(dialogues))):
+        if dialogues[i]["dialogue_id"] in SAMPLES_IDS:
+            print(f"Exclude sample dialogues in prompt i={i}")
+            continue
+
+        processed_dial = dialogue_to_prompt_format(dialogues[i])
+
+        full_prompt = PROMPT_TEMPLATE.replace("{dialogue_transcript}", processed_dial.strip())
+
+        # Setup API
+        api_key = os.getenv("QWEN_API_KEY")
+        if not api_key:
+            raise ValueError("Please set QWEN_API_KEY environment variable.")
+        
+        client = openai.OpenAI(api_key=api_key, base_url=BASE_URL.strip())
+        valid_responses = []
+
+        print(f"Running {NUM_ITER} iteration (temp={TEMPERATURE})...\n")
+
+        i = 0
+        for i in tqdm(range(NUM_ITER)):
+            try:
+                resp = client.chat.completions.create(
+                    model=MODEL,
+                    messages=[{"role": "user", "content": full_prompt}],
+                    temperature=TEMPERATURE,
+                    max_tokens=MAX_TOKEN,
+                    n=1, # dashscope only support n=[1,4]
+                )
+                raw = resp.choices[0].message.content.strip()
+                parsed = extract_json_response(raw)
+                
+                if parsed:
+                    valid_responses.append(parsed)
+                    print(f"[{i+1:02d}] ✅ Valid JSON")
+                else:
+                    print(f"[{i+1:02d}] ❌ Invalid JSON")
+                    print(f"    Snippet: {raw[:150]}...")
+                    i -= 1 # retry
+                    
+            except Exception as e:
+                print(f"[{i+1:02d}] ❌ Error: {e}")
+
+        if not valid_responses:
+            raise RuntimeError("No valid JSON responses received.")
+
+        print(f"\n✅ Got {len(valid_responses)} valid responses. Aggregating...")
+
+        final_result = aggregate_scores(valid_responses)
+        
+        print("\n" + "="*50)
+        print("FINAL AGGREGATED EVALUATION")
+        print("="*50)
+        print(json.dumps(final_result, indent=2))
+
 if __name__ == "__main__":
-    main()
+    # single_poc()
+    full_poc()
