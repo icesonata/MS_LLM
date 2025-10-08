@@ -48,7 +48,7 @@ python3 run.py \
 ```
 
 ```bash
-python3 run_v2.py \
+python3 run.py \
     --models gemini \
     --datasets JDDC MWOZ \
     --sample-size 1 \

@@ -39,15 +39,15 @@ class Dialogue:
     
     @property
     def average_satisfaction(self) -> float:
-        """Calculate average satisfaction score"""
+        """Calculate average satisfaction score from OVERALL line (1-5 scale)"""
         if self.overall_satisfaction:
-            return np.mean(self.overall_satisfaction)
-        # Calculate from utterance-level scores
+            return float(np.mean(self.overall_satisfaction))  # Keep original 1-5 scale
+        # Fallback: Calculate from utterance-level scores
         all_scores = []
         for utt in self.utterances:
             if utt.satisfaction_scores:
                 all_scores.extend(utt.satisfaction_scores)
-        return np.mean(all_scores) if all_scores else 3.0
+        return float(np.mean(all_scores)) if all_scores else 3.0
     
     def to_text(self) -> str:
         """Convert dialogue to text format"""
@@ -107,7 +107,7 @@ class ActionMapper:
 
 
 class DatasetParser:
-    """Parse JDDC and MWOZ dataset formats"""
+    """Parse JDDC, MWOZ, and CCPE dataset formats"""
     
     def __init__(self):
         self.action_mapper = ActionMapper()
@@ -146,9 +146,9 @@ class DatasetParser:
             parts = line.split('\t')
             
             # Check if this is an OVERALL line
-            if len(parts) >= 2 and parts[1] == 'OVERALL':
-                # Parse overall satisfaction
-                if len(parts) >= 4 and parts[3]:
+            if len(parts) >= 2 and parts[1].strip() == 'OVERALL':
+                # Parse overall satisfaction scores
+                if len(parts) >= 4 and parts[3].strip():
                     scores_str = parts[3].strip()
                     overall_satisfaction = self._parse_scores(scores_str)
                 
@@ -211,7 +211,11 @@ def load_dataset(dataset_name: str) -> List[Dialogue]:
     if not dataset_path.exists():
         raise FileNotFoundError(f"Dataset {dataset_name} not found at {dataset_path}")
     
-    language = Language.CHINESE if dataset_name == 'JDDC' else Language.ENGLISH
-    parser = DatasetParser()
+    # Determine language based on dataset name
+    if dataset_name == 'JDDC':
+        language = Language.CHINESE
+    else:
+        language = Language.ENGLISH  # MWOZ, CCPE, etc.
     
+    parser = DatasetParser()
     return parser.parse_file(str(dataset_path), language)
