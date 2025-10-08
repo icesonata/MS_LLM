@@ -1,0 +1,192 @@
+[
+  {
+    "dialogue_id": 1,
+    "average_score_100": 50.5,
+    "model_score": 60
+  },
+  {
+    "dialogue_id": 3,
+    "average_score_100": 50.5,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 2,
+    "average_score_100": 56.69,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 7,
+    "average_score_100": 56.69,
+    "model_score": 90
+  },
+  {
+    "dialogue_id": 9,
+    "average_score_100": 58.75,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 15,
+    "average_score_100": 58.75,
+    "model_score": 90
+  },
+  {
+    "dialogue_id": 10,
+    "average_score_100": 67.0,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 20,
+    "average_score_100": 67.0,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 13,
+    "average_score_100": 62.88,
+    "model_score": 90
+  },
+  {
+    "dialogue_id": 29,
+    "average_score_100": 62.88,
+    "model_score": 90
+  },
+  {
+    "dialogue_id": 14,
+    "average_score_100": 69.06,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 115,
+    "average_score_100": 69.06,
+    "model_score": 90
+  },
+  {
+    "dialogue_id": 16,
+    "average_score_100": 44.31,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 41,
+    "average_score_100": 44.31,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 18,
+    "average_score_100": 31.94,
+    "model_score": 90
+  },
+  {
+    "dialogue_id": 70,
+    "average_score_100": 31.94,
+    "model_score": 60
+  },
+  {
+    "dialogue_id": 24,
+    "average_score_100": 65.35,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 326,
+    "average_score_100": 65.35,
+    "model_score": 70
+  },
+  {
+    "dialogue_id": 136,
+    "average_score_100": 75.25,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 202,
+    "average_score_100": 25.75,
+    "model_score": 70
+  },
+  {
+    "dialogue_id": 32,
+    "average_score_100": 45.55,
+    "model_score": 60
+  },
+  {
+    "dialogue_id": 40,
+    "average_score_100": 45.55,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 35,
+    "average_score_100": 42.25,
+    "model_score": 70
+  },
+  {
+    "dialogue_id": 46,
+    "average_score_100": 42.25,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 37,
+    "average_score_100": 35.65,
+    "model_score": 90
+  },
+  {
+    "dialogue_id": 213,
+    "average_score_100": 35.65,
+    "model_score": 90
+  },
+  {
+    "dialogue_id": 53,
+    "average_score_100": 30.7,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 407,
+    "average_score_100": 30.7,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 78,
+    "average_score_100": 55.45,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 93,
+    "average_score_100": 55.45,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 138,
+    "average_score_100": 60.4,
+    "model_score": 90
+  },
+  {
+    "dialogue_id": 169,
+    "average_score_100": 60.4,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 150,
+    "average_score_100": 38.12,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 152,
+    "average_score_100": 38.12,
+    "model_score": 70
+  },
+  {
+    "dialogue_id": 163,
+    "average_score_100": 40.6,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 273,
+    "average_score_100": 40.6,
+    "model_score": 80
+  },
+  {
+    "dialogue_id": 191,
+    "average_score_100": 34.0,
+    "model_score": 60
+  },
+  {
+    "dialogue_id": 254,
+    "average_score_100": 34.0,
+    "model_score": 80
+  }
+]
