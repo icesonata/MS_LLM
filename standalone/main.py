@@ -11,11 +11,12 @@ from collections import Counter
 import openai  # uses OpenAI-compatible Qwen API endpoint
 from typing import List, Any, Dict
 from tqdm import tqdm
+from prompts import *
 
 MODEL = "qwen3-30b-a3b-instruct-2507"
 BASE_URL = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
 TEMPERATURE = 0.7
-NUM_ITER = 3
+NUM_ITER = 1
 # K = 5
 MAX_TOKEN = 2048
 SAMPLES_IDS = {335, 25, 26}
@@ -433,7 +434,7 @@ def full_poc():
             continue
 
         processed_dial = dialogue_to_prompt_format(dial, include_overall=False)
-        full_prompt = PROMPT_TEMPLATE.replace("{{dialogue_transcript}}", processed_dial.strip())
+        full_prompt = PROMPT_1.replace("{{dialogue_transcript}}", processed_dial.strip())
 
         valid_responses = []
         attempts = 0

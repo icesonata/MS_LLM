@@ -80,8 +80,11 @@ def main():
 
     with open("result.json", "r") as f:
         result = json.load(f)
-        
-    result_df = pd.DataFrame(result)
+            
+    # Remove entries with model_score == 0
+    filtered_result = [r for r in result if r.get("model_score", 0) != 0]
+
+    result_df = pd.DataFrame(filtered_result)
     df = pd.DataFrame(average_scores)
 
     result_df = result_df.join(df, on='dialogue_id', lsuffix='_left', rsuffix='_right')
