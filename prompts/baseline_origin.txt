@@ -1,0 +1,120 @@
+You are an evaluator for customer service dialogues. 
+Use the provided few-shot examples as guidance. 
+For the target dialogue (below) produce a JSON object with six criteria scores (discrete values: 20,40,60,80,100) and a short one-sentence justification for each. Also output "OverallExperience". Use only evidence from the dialogue when justifying.
+=== FEW-SHOT EXAMPLES ===
+SYSTEM          	Can you tell me what types of movies you like?          	OTHER
+USER	I really like comedies.   ENTITY_NAME+MOVIE_GENRE_OR_CATEGORY           	3,3,3,4
+SYSTEM          	ok, why do you like comedies? OTHER
+USER	I like to laugh. I like the lightheartedness of it, you know, nothing too serious, a true escape from everyday life. And just puts you in a good mood, and that's how I would prefer to be.  	ENTITY_PREFERENCE+MOVIE_GENRE_OR_CATEGORY         	3,3,3,4
+SYSTEM          	got it, can you name a specific movie you really liked?           	OTHER
+USER	Sure, Best in Show is one of my absolute favorites.           	ENTITY_NAME+MOVIE_OR_SERIES   	3,3,5,5
+SYSTEM          	ok, why do you like that movie?           	OTHER
+USER	Oh gosh. It's like I'ts perfect. It's a mockumentary style film and they are mocking the dog show world. So, the dog show world that they show is like a carbon copy of the real thing because it's inherently funny, so they don't have to really max with it. And a lot of the player they it there's a script for the movie but it's also ad libed.           	ENTITY_OTHER+MOVIE_OR_SERIES 	3,3,4,3
+USER	It's just hilarious. It's so original.           	ENTITY_PREFERENCE+MOVIE_OR_SERIES    	3,3,3,4
+USER	So much, so different, and just so funny. It makes you laugh every time you watch it.         	ENTITY_PREFERENCE+MOVIE_OR_SERIES    	3,3,3,4
+SYSTEM          	ok, would you say you enjoy satire?           	ENTITY_NAME+MOVIE_GENRE_OR_CATEGORY         	
+USER	Yeah.	OTHER 3,3,4,4
+SYSTEM          	ok, can you name a film you dislike? 	OTHER
+USER	Sure, Bounty Hunter.	ENTITY_NAME+MOVIE_OR_SERIES   	3,3,3,4
+SYSTEM          	why didn't you like that movie?            	OTHER
+USER	It was supposed to be a comedy, and not only was it not funny, it was confusing what they were going for. I think it was miscast.           	ENTITY_PREFERENCE+MOVIE_OR_SERIES    	3,3,2,3
+USER	It's Jennifer Aniston and I can't even think of his name, but somebody who I don't really care for. But I do like Jennifer usually, and it wasn't a good fit for her. Neither role really fit the actor, like they were sort of playing against type in both roles. I think it was kind of supposed to be almost like a almost like a buddy comedy, but or Cuz it was really focused on two people, but not really buddies, but they were in conflict. It wasn't funny.   ENTITY_PREFERENCE+PERSON         	3,3,2,3
+USER	It kind of had like a more dramatic feel to it because it wasn't funny. It was just It was odd. Really.         	ENTITY_PREFERENCE+MOVIE_OR_SERIES    	4,4,2,4
+SYSTEM          	was the acting bad?  	OTHER
+USER	It wasn't great. It was not great.           	ENTITY_PREFERENCE+MOVIE_OR_SERIES    	3,3,2,2
+SYSTEM          	ok, can you tell me have you watched the movie the shawshank redemption?  	ENTITY_NAME+MOVIE_OR_SERIES   	
+USER	Oh, yes.          	OTHER 3,3,3,3
+SYSTEM          	do you like that movie?            	OTHER
+USER	It's a excellent movie.   ENTITY_PREFERENCE+MOVIE_OR_SERIES    	3,3,3,5
+SYSTEM          	ok, what about the movie did you enjoy?        	OTHER
+USER	It really has a different feel to it. It's despite them being, you know, prisoners, they create very endearing characters who you rooting for, who you want to see have a better life. It is a You're transported to a different time so you can sort of capture what was going on better.  	ENTITY_PREFERENCE+MOVIE_OR_SERIES    	3,3,3,5
+USER	It very moving, it very and and it's very touching which usually does not happen with something that's sort of a prison drama. I don't you ever really view them as true prisoners some of whom shouldn't really have gotten as steep of sentences as they do or like somebody who walks who was there far too long for what it sounded like he was in for and then couldn't live in the real world having been locked up so long. So, it's it's it's a it's just a it's a excellent film.     	ENTITY_PREFERENCE+MOVIE_OR_SERIES           	3,3,3,5
+USER	with amazing acting, wonderful direction and it's just It's very special. It it really is. It's it's one of those wonder you look back and you wonder why didn't want to win Oscar.  ENTITY_PREFERENCE+MOVIE_OR_SERIES    	3,3,5,5
+USER	OVERALL        	OTHER 4,4,5,4
+Expected output:
+{
+ "TaskSuccess": {"score": 100, "justification": "System elicited full, relevant user responses and user answered the prompts fully (e.g., 'Sure, Best in Show...')."},
+ "Helpfulness": {"score": 100, "justification": "System's prompts elicited detailed user content and guided discussion (multiple targeted prompts)."},
+ "Accuracy": {"score": 100, "justification": "No factual contradictions in the dialogue; content is user preference, consistently reported."},
+ "Understanding": {"score": 100, "justification": "System questions matched user replies immediately, indicating correct intent recognition."},
+ "Empathy": {"score": 80, "justification": "Tone is polite and conversational but not explicitly emotional."},
+ "Fluency": {"score": 100, "justification": "Language flows naturally and is easy to follow."},
+ "OverallExperience": {"score": 100, "justification": "Weighted average heavily positive; user provided full, coherent responses."}
+}
+ 
+Example B:
+SYSTEM          	What kinds of movies do you like?     	OTHER
+USER	I really like action movies.           	ENTITY_PREFERENCE+MOVIE_GENRE_OR_CATEGORY         	3,3,4
+USER	Like superhero movies.           	ENTITY_PREFERENCE+MOVIE_GENRE_OR_CATEGORY         	3,3,4
+SYSTEM          	Why do you like action movies?           	ENTITY_NAME+MOVIE_GENRE_OR_CATEGORY         	
+USER	They're just really fun, energetic. They make me feel like, you know, I can be an action star, too. See lots of cool stunts, and usually lots of unique and cool locations.           	ENTITY_PREFERENCE+MOVIE_GENRE_OR_CATEGORY         	4,3,4
+SYSTEM          	Alright, how about a movie you liked?  OTHER
+USER	I really liked Transporter.        	ENTITY_NAME+MOVIE_OR_SERIES   	3,3,5
+SYSTEM          	Why did you like that movie? 	OTHER
+USER	There's a lot of really cool stunts and a lot of awesome action scenes really like heart pounding excitement.   	ENTITY_PREFERENCE+MOVIE_OR_SERIES    	4,3,4
+SYSTEM          	Well, is there a movie you did not like? OTHER
+USER	That action movie I didn't like. Hardcore Henry, I didn't like. I really didn't like the first person and it's just seem like a really tough violent for no reason.           	ENTITY_NAME+MOVIE_OR_SERIES   	3,3,3
+SYSTEM          	Ok, then have you seen the movie John Wick ?           	ENTITY_NAME+MOVIE_OR_SERIES   	
+USER	I have. John Wick is awesome. ENTITY_OTHER+MOVIE_OR_SERIES 	3,4,4
+SYSTEM          	Why did you like John Wick?  	ENTITY_NAME+MOVIE_OR_SERIES   	
+USER	The story is really good. The characters are awesome, and there's a lot of cool themes in the movie. 	ENTITY_PREFERENCE+MOVIE_OR_SERIES    	4,4,3
+SYSTEM          	Ok, thank you for sharing. Good bye.	OTHER
+USER	OVERALL        	OTHER 4,4,4
+ 
+Expected output:
+{
+ "TaskSuccess": {"score": 100, "justification": "User responds directly with named movies and reasons; interaction completed successfully."},
+ "Helpfulness": {"score": 80, "justification": "System elicits useful info but provides minimal extra guidance."},
+ "Accuracy": {"score": 100, "justification": "No contradictions; user statements are consistent."},
+ "Understanding": {"score": 100, "justification": "System understood intent with direct follow-ups."},
+ "Empathy": {"score": 60, "justification": "Neutral, polite tone without explicit empathy statements."},
+ "Fluency": {"score": 100, "justification": "Clear and coherent turns."},
+ "OverallExperience": {"score": 100, "justification": "Positive, successful elicitation of preferences."}
+}
+ 
+Example C (negative example)
+SYSTEM          	What type of movies do you enjoy?    	OTHER
+USER	I like movies that are based on true story.           	ENTITY_PREFERENCE+MOVIE_GENRE_OR_CATEGORY         	3,3,3
+SYSTEM          	What appeals to you with these type of movies?        	OTHER
+USER	I think it's just easier to get invested in the story knowing it's at least partially true, so it feels more real, like you can get more invested in the characters.           	ENTITY_PREFERENCE+MOVIE_GENRE_OR_CATEGORY         	3,4,3
+SYSTEM          	Is there a specific movie you enjoy from this genre? 	OTHER
+USER	I watched Apollo 13 recently, and that's a really good movie.           	ENTITY_OTHER+MOVIE_OR_SERIES 	3,3,3
+SYSTEM          	What did you like about this movie?  	OTHER
+USER	I've always liked space travel, like it's just an interesting idea, and so seeing the story of how their mission went wrong and how they got back was just really fascinating.           	ENTITY_PREFERENCE+MOVIE_OR_SERIES    	4,4,3
+SYSTEM          	Are there any type of movies that you don't enjoy?    	OTHER
+USER	I don't like comic book movies very much.           	ENTITY_PREFERENCE+MOVIE_OR_SERIES    	2,3,3
+SYSTEM          	What about these movies is unappealing?    	OTHER
+USER	There's just too many of them. Like I fell behind, and I've never felt like catching back up, so I just tend to ignore all of them, and they just generally don't interest me that much.   ENTITY_PREFERENCE+MOVIE_GENRE_OR_CATEGORY         	3,2,3
+SYSTEM          	Is there a specific movie that you heavily dislike?      	OTHER
+USER	The movie I didn't like Available. I saw that recently, I didn't like that movie.           	ENTITY_OTHER+MOVIE_OR_SERIES 	3,2,3
+SYSTEM          	What do you dislike about this movie? OTHER
+SYSTEM          	Have you seen Armageddon 	OTHER
+USER	No.    	ENTITY_OTHER+MOVIE_OR_SERIES 	1,1,3
+SYSTEM          	How about the Incredibles 2 	ENTITY_NAME+MOVIE_OR_SERIES   	
+USER	Nope, haven't seen that.        	ENTITY_OTHER+MOVIE_OR_SERIES 	2,1,2
+USER	OVERALL        	OTHER 2,2,2
+Expected output:
+{
+ "TaskSuccess": {"score": 40, "justification": "Interaction is repetitive and system sometimes asks similar questions without deepening – limited task impact."},
+ "Helpfulness": {"score": 40, "justification": "Prompts are generic and do not guide to richer detail."},
+ "Accuracy": {"score": 60, "justification": "No clear contradictions, but little substantive factual content to verify."},
+ "Understanding": {"score": 60, "justification": "System sometimes repeats prompts; partial understanding signalled."},
+ "Empathy": {"score": 60, "justification": "Neutral polite tone; no explicit empathetic language."},
+ "Fluency": {"score": 60, "justification": "Language is understandable but not particularly engaging."},
+ "OverallExperience": {"score": 40, "justification": "Overall the exchange is shallow and yields limited useful information."}
+}
+ 
+=== TARGET DIALOGUE ===
+{{dialogue_transcript}}
+ 
+
+Output JSON (strict):
+{
+ "TaskSuccess": {"score": <20|40|60|80|100>, "justification": "<1-sentence evidence>"},
+ "Helpfulness": {"score": <...>, "justification": "..."},
+ "Accuracy": {"score": <...>, "justification": "..."},
+ "Understanding": {"score": <...>, "justification": "..."},
+ "Empathy": {"score": <...>, "justification": "..."},
+ "Fluency": {"score": <...>, "justification": "..."},
+ "OverallExperience": {"score": <...>, "justification": "..."}
+}
