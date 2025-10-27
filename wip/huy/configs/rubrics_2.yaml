@@ -1,0 +1,121 @@
+version: 1.0.0
+name: ccpe_evaluator_v1
+description: >-
+  Rubric used to evaluate customer service dialogues. Scores are 0..100 for each
+  criterion. Guidance, examples and weights are provided to enable reproducible
+  automated and human evaluation.
+channels:
+  - voice
+  - chat
+  - email
+metrics:
+  TaskSuccess:
+    desc: "Was the customer's issue resolved correctly and completely? Were accurate next-steps provided?"
+    scale:
+      min: 0
+      max: 100
+    weight: 0.25
+    guidance: |
+      90-100: Issue fully resolved; answer is actionable and complete without follow-up.
+      60-89: Mostly resolved but missing minor details or next steps.
+      30-59: Partially resolved; requires additional clarification or steps.
+      0-29: Not resolved; incorrect or no solution provided.
+    examples:
+      - "Provided exact steps to reset account and confirmed resolution."
+
+  HelpfulnessRelevance:
+    desc: "Responses are useful, specific and directly relevant to the user's request."
+    scale:
+      min: 0
+      max: 100
+    weight: 0.20
+    guidance: |
+      90-100: Highly specific, answers the user's explicit and implicit needs.
+      60-89: Generally helpful but contains some generic or irrelevant content.
+      30-59: Limited usefulness; partly off-topic or vague.
+      0-29: Not helpful or irrelevant.
+
+  FaithfulnessAccuracy:
+    desc: "Factual correctness and grounding in available data, policies, or documents."
+    scale:
+      min: 0
+      max: 100
+    weight: 0.15
+    guidance: |
+      90-100: All claims verifiable and supported by facts or policy.
+      60-89: Mostly accurate; minor factual slips that don't harm outcome.
+      30-59: Noticeable inaccuracies or unsupported assertions.
+      0-29: Hallucinations or harmful misinformation.
+
+  EmpathyPoliteness:
+    desc: "Acknowledges customer concerns, shows understanding, uses polite tone."
+    scale:
+      min: 0
+      max: 100
+    weight: 0.15
+    guidance: |
+      90-100: Warm, empathetic language and appropriate apologies/assurances.
+      60-89: Polite and professional but limited emotional nuance.
+      30-59: Tone is flat or occasionally curt.
+      0-29: Rude, dismissive, or visibly insensitive.
+
+  ComplianceSafety:
+    desc: "Avoids disallowed actions (PII leakage, unsafe advice) and follows escalation rules."
+    scale:
+      min: 0
+      max: 100
+    weight: 0.05
+    guidance: |
+      100: Fully compliant; no PII exposure, no unsafe guidance.
+      50: Minor policy edge-cases but no clear violation.
+      0: Policy violation or unsafe advice present.
+
+  EfficiencyEffort:
+    desc: "Concise, minimizes back-and-forth and customer effort; clear next steps."
+    scale:
+      min: 0
+      max: 100
+    weight: 0.10
+    guidance: |
+      90-100: Single-turn resolution or very few clarifying turns.
+      60-89: Reasonable efficiency with small clarifications.
+      30-59: Repetitive or verbose; requires multiple clarifications.
+      0-29: Inefficient, high effort for the customer.
+
+  FluencyCoherence:
+    desc: "Grammatical, coherent, and logically flowing responses."
+    scale:
+      min: 0
+      max: 100
+    weight: 0.10
+    guidance: |
+      90-100: Natural, fluent language and smooth logical flow.
+      60-89: Minor wording issues but understandable.
+      30-59: Several grammar or coherence problems.
+      0-29: Unintelligible or contradictory responses.
+
+aggregation:
+  method: weighted_mean
+  overall:
+    description: "OverallExperience is the weighted mean of the seven metrics, rounded to the nearest integer."
+    rounding: integer
+    output_field: OverallExperience
+
+format:
+  score_type: integer
+  per_metric: true
+  output_schema: |
+    {
+      "TaskSuccess": {"score": <int>, "justification": "..."},
+      "HelpfulnessRelevance": {"score": <int>, "justification": "..."},
+      "FaithfulnessAccuracy": {"score": <int>, "justification": "..."},
+      "EmpathyPoliteness": {"score": <int>, "justification": "..."},
+      "ComplianceSafety": {"score": <int>, "justification": "..."},
+      "EfficiencyEffort": {"score": <int>, "justification": "..."},
+      "FluencyCoherence": {"score": <int>, "justification": "..."},
+      "OverallExperience": {"score": <int>, "justification": "..."}
+    }
+
+notes: |
+  - Use the guidance bands and examples to ensure inter-rater consistency.
+  - If a metric is not applicable due to missing information, annotate the justification and assign a conservative score.

@@ -1,0 +1,24 @@
+project: cs-dialogue-eval
+storage:
+  data_root: data
+  object_store: local
+llm:
+  provider: openai
+  model: gpt-4o-mini
+  temperature: 0.0
+  max_tokens: 1024
+  json_mode: true
+pii:
+  redact: true
+  tool: presidio
+telemetry:
+  traces: langfuse
+  opentelemetry: true
+aggregation:
+  method: weighted_mean
+  stabilization:
+    strategy: median_of_n
+    n: 3
+  calibration:
+    enabled: true
+    method: isotonic
