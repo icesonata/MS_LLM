@@ -1,0 +1,77 @@
+Please evaluate strictly the whole conversation of each dialogue. Explain your reasoning as if you are a difficult evaluator for customer service dialogues. Think step by step, and then give an overall score for each dialogue in the end inside <score> tags (example <score>52</score>).
+Must have <score> tag for EACH dialogue in the batch.
+
+Examples:
+- This is a bad dialogue.Overall score: 25.75 :
+SYSTEM: What type of movies do you enjoy?
+USER: I like movies that are based on true story.
+SYSTEM: What appeals to you with these type of movies?
+USER: I think it's just easier to get invested in the story knowing it's at least partially true, so it feels more real, like you can get more invested in the characters.
+SYSTEM: Is there a specific movie you enjoy from this genre?
+USER: I watched Apollo 13 recently, and that's a really good movie.
+SYSTEM: What did you like about this movie?
+USER: I've always liked space travel, like it's just an interesting idea, and so seeing the story of how their mission went wrong and how they got back was just really fascinating.
+SYSTEM: Are there any type of movies that you don't enjoy?
+USER: I don't like comic book movies very much.
+SYSTEM: What about these movies is unappealing?
+USER: There's just too many of them. Like I fell behind, and I've never felt like catching back up, so I just tend to ignore all of them, and they just generally don't interest me that much.
+SYSTEM: Is there a specific movie that you heavily dislike?
+USER: The movie I didn't like Available. I saw that recently, I didn't like that movie.
+SYSTEM: What do you dislike about this movie?
+SYSTEM: Have you seen Armageddon
+USER: No.
+SYSTEM: How about the Incredibles 2
+USER: Nope, haven't seen that.
+
+
+- This is an average dialogue.Overall score: 75.25 :
+SYSTEM: What kinds of movies do you like?
+USER: I really like action movies.
+USER: Like superhero movies.
+SYSTEM: Why do you like action movies?
+USER: They're just really fun, energetic. They make me feel like, you know, I can be an action star, too. See lots of cool stunts, and usually lots of unique and cool locations.
+SYSTEM: Alright, how about a movie you liked?
+USER: I really liked Transporter.
+SYSTEM: Why did you like that movie?
+USER: There's a lot of really cool stunts and a lot of awesome action scenes really like heart pounding excitement.
+SYSTEM: Well, is there a movie you did not like?
+USER: That action movie I didn't like. Hardcore Henry, I didn't like. I really didn't like the first person and it's just seem like a really tough violent for no reason.
+SYSTEM: Ok, then have you seen the movie John Wick ?
+USER: I have. John Wick is awesome.
+SYSTEM: Why did you like John Wick?
+USER: The story is really good. The characters are awesome, and there's a lot of cool themes in the movie.
+SYSTEM: Ok, thank you for sharing. Good bye.
+
+
+- This is a slightly good dialogue. Overall score: 81.44 :
+SYSTEM: Can you tell me what types of movies you like?
+USER: I really like comedies.
+SYSTEM: ok, why do you like comedies?
+USER: I like to laugh. I like the lightheartedness of it, you know, nothing too serious, a true escape from everyday life. And just puts you in a good mood, and that's how I would prefer to be.
+SYSTEM: got it, can you name a specific movie you really liked?
+USER: Sure, Best in Show is one of my absolute favorites.
+SYSTEM: ok, why do you like that movie?
+USER: Oh gosh. It's like I'ts perfect. It's a mockumentary style film and they are mocking the dog show world. So, the dog show world that they show is like a carbon copy of the real thing because it's inherently funny, so they don't have to really max with it. And a lot of the player they it there's a script for the movie but it's also ad libed.
+USER: It's just hilarious. It's so original.
+USER: So much, so different, and just so funny. It makes you laugh every time you watch it.
+SYSTEM: ok, would you say you enjoy satire?
+USER: Yeah.
+SYSTEM: ok, can you name a film you dislike?
+USER: Sure, Bounty Hunter.
+SYSTEM: why didn't you like that movie?
+USER: It was supposed to be a comedy, and not only was it not funny, it was confusing what they were going for. I think it was miscast.
+USER: It's Jennifer Aniston and I can't even think of his name, but somebody who I don't really care for. But I do like Jennifer usually, and it wasn't a good fit for her. Neither role really fit the actor, like they were sort of playing against type in both roles. I think it was kind of supposed to be almost like a almost like a buddy comedy, but or Cuz it was really focused on two people, but not really buddies, but they were in conflict. It wasn't funny.
+USER: It kind of had like a more dramatic feel to it because it wasn't funny. It was just It was odd. Really.
+SYSTEM: was the acting bad?
+USER: It wasn't great. It was not great.
+SYSTEM: ok, can you tell me have you watched the movie the shawshank redemption?
+USER: Oh, yes.
+SYSTEM: do you like that movie?
+USER: It's a excellent movie.
+SYSTEM: ok, what about the movie did you enjoy?
+USER: It really has a different feel to it. It's despite them being, you know, prisoners, they create very endearing characters who you rooting for, who you want to see have a better life. It is a You're transported to a different time so you can sort of capture what was going on better.
+USER: It very moving, it very and and it's very touching which usually does not happen with something that's sort of a prison drama. I don't you ever really view them as true prisoners some of whom shouldn't really have gotten as steep of sentences as they do or like somebody who walks who was there far too long for what it sounded like he was in for and then couldn't live in the real world having been locked up so long. So, it's it's it's a it's just a it's a excellent film.
+USER: with amazing acting, wonderful direction and it's just It's very special. It it really is. It's it's one of those wonder you look back and you wonder why didn't want to win Oscar.
+
+
+These are dialogues transcripts to evaluate. Please evaluate each dialogue separately and provide a score for each one.
