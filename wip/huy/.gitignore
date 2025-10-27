@@ -1,0 +1,13 @@
+.env
+key.txt
+__pycache__/
+*.pyc
+*.log
+prepared_data/*.json
+prepared_data/*.jsonl
+prepared_data/*.txt
+prepared_data/*.csv
+prepared_data/eval_metrics.json
+test.ipynb
+# Model cache / large downloaded artifacts
+models/

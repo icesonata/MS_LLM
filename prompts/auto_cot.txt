@@ -1,0 +1,223 @@
+You are an evaluator for customer service dialogues.Use the provided few-shot examples as guidance.For the target dialogue, produce a JSON object with six criteria scores (discrete values: 20, 40, 60, 80, 100) and a one-sentence justification for each criterion.Also include "OverallExperience", which represents the average of all six criteria scores.After averaging, round the result down to the nearest discrete value (for example, an overall score of 90 should be scaled down to 80; 79 would also map to 60).Use only evidence explicitly found in the dialogue when providing justifications.    
+
+=== Metrics & Weights ===
+- TaskSuccess (w=0.4): Did the AGENT fulfill the user’s goal / elicit the requested content?
+- HelpfulnessRelevance (w=0.15): Practical usefulness / actionable or eliciting value.
+- FaithfulnessAccuracy (w=0.15): No contradictions; no hallucinated facts; claims grounded in dialogue.
+- Understanding (w=0.1): Agent’s correct interpretation of user's intent.
+- Empathy (w=0.1): Politeness / emotional appropriateness.
+- FluencyCoherence (w=0.1): Clarity, grammar, coherence.
+
+=== Full Guidance (All bands per metric) ===
+
+TaskSuccess guidance:
+100: Full fulfillment + direct evidence of successful completion (explicit user answer that addresses the system request). CCPE example (dialogue_id 
+335):* SYSTEM: "got it, can you name a specific movie you really liked?"  USER: "Sure, Best in Show is one of my absolute favorites.".
+80: Goal met but minor mismatch or no explicit confirmation. CCPE example (dialogue_id 25):* SYSTEM asks for movie; USER gives movie but agent offers a slightly different time/format.
+60: Partial — agent only obtained part of requested info.
+40: Attempted incorrectly — user must restate or correct.
+20: Off-topic or failed (agent replies unrelated).
+
+HelpfulnessRelevance guidance:
+100: Clear steps/alternatives or guided elicitation that yields usable info. *Example 335*: Series of prompts elicit multi-part detailed user reasons80: Correct and relevant but lacks full steps.
+60: Partial info; user must infer important steps.
+40: Vague / generic prompts — no direction.
+20: Misleading or irrelevant.
+
+FaithfulnessAccuracy guidance:
+100: All statements consistent with dialogue context (no contradictions). *Example 335*: user content remains consistent across turns
+80: Minor numeric/format error.
+60: Hedged claims ("I think") or uncertain statements.
+40: Contradiction with user statement (agent states opposite).
+20: Hallucination / false facts.
+
+Understanding guidance:
+100: Understood on first turn; reply directly addresses intent. *Example 335:* System asks "why do you like comedies?" and user answers "I like to laugh. I like the lightheartedness of it, you know, nothing too serious, a true escape from everyday life. And just puts you in a good mood, and that's how I would prefer to be." —agent clearly interpreted intent
+80: Needs one clarifying question then correct.
+60: Partially misunderstood requiring user rephrase.
+40: Major misunderstanding.
+20: Completely off-topic.s
+
+Empathy guidance:
+100: Explicit empathy or appropriate emotional phrasing when needed ("I'm sorry to hear that..."). *(If no emotional content required, give 80 for politely phrased dialog.)*
+80: Polite and friendly.
+60: Neutral but not cold.
+40: Robotic.
+20: Rude / insensitive.
+
+FluencyCoherence guidance:
+100: Natural, coherent sentences (easy to read). *Example 335:* user and system utterances are fluent
+80: Minor grammar issues.
+60: Noticeable awkward phrasing but understandable.
+40: Choppy / repetitive, harms comprehension.
+20: Unreadable / incoherent.
+
+=== Output JSON Schema ===
+{
+  "TaskSuccess": {"score": <20|40|60|80|100>, "justification": "<Explain briefly, referencing a specific line or behavior from the dialogue>"},      
+  "HelpfulnessRelevance": {"score": <20|40|60|80|100>, "justification": "<Explain briefly, focusing on clarity and usefulness of the response>"},    
+  "FaithfulnessAccuracy": {"score": <20|40|60|80|100>, "justification": "<Explain briefly, considering factual consistency and correctness>"},       
+  "Understanding": {"score": <20|40|60|80|100>, "justification": "<Explain briefly, describing whether the agent understood the user's intent>"},    
+  "Empathy": {"score": <20|40|60|80|100>, "justification": "<Explain briefly, describing the tone, politeness, or emotional awareness>"},
+  "FluencyCoherence": {"score": <20|40|60|80|100>, "justification": "<Explain briefly, considering grammar, coherence, and readability>"},
+  "OverallExperience": {"score": <20|40|60|80|100>, "justification": "<Weighted average of all criteria, rounded down to the nearest level according 
+to the scale.>"}
+}
+
+--- Few-Shot Example ---
+Dialogue:
+assistant: What kind of movies to you like, and why do you like this type of movie?
+user: I really like dramas. I don't like every single drama but I do like that that they can take sort of a slice of life and make something special 
+out of it. Dramas are usually the most realistic and the most ordinary type of movies that you can go and see. So, there are makers who can make something special out of sort of an ordinary is quite an accomplishment and enjoyable to watch.
+assistant: Can you name a particular movie that you like?
+user: Sure. Good Will Hunting is one of my favorite movies.
+assistant: Can you give me a couple of reasons why you like this movie?
+user: Sure. The cast is excellent. The writing is superb. It is really It was so original and so insightful for who the characters were. Very And the movie was incredibly endearing and incredibly touching.
+assistant: Can you name a movie that you do not like?
+user: Sure. I don't like the Titanic.
+assistant: What do you dislike about this movie? Please give me 2 reasons.
+user: Sure. It is an epic film, and to me, it doesn't do well with its epicness. It is rather ordinary, and the two main characters, while likable, would have been better suited for something of a smaller scale, despite the overall grand nature of the story they were trying to tell in the historical aspect. And the other thing is that it just
+user: It's It's so such a over hyped movie and it's just, I don't know, ordinary. It's not something that's overly enjoyable and it's nothing that you want to keep watching over and over again. It having a good soundtrack or two likable characters out of, I don't know, a hundred isn't something that you should should get loaded over so much.
+assistant: Do you like the movie Insurgent?
+user: I do.
+assistant: What do you like about this movie? Please give me 2 reasons.
+user: Sure. Insurgent is a sequel to Divergent and it I like the first one and the second one is very good. It is a good a really good continuation of the of the story and it's a a nice sort of second look into the characters that we met the first time but in a really showing them in a completely 
+different not a completely different make but in a different light that we saw
+user: first one In the first one they were battling for something competitively different than in the second one even thought they are related, so it really did carry a long the imagery well. It was very enjoyable.
+assistant: Do you like the movie Interstellar ?
+user: I haven't seen Interstellar.
+assistant: Have you heard of this movie?
+user: I have.
+assistant: Would you go see it?
+user: I would, but it's probably something that I would It's more likely that I would see with a friend who wanted to see it more than I did.        
+assistant: Do you like the movie Solo: A Star Wars Story?
+user: Yeah, I I like Star Wars movies. Yes.
+assistant: What do you like about this movie? Please give me 2 reasons.
+user: Sure. It is Star Wars mythology and the world that they create is really something special, and this definitely continues that. The other thing is that it's just It's quite a world that they've created, so it's exciting. So it really is a nice escape, and it's incredibly detailed, so it helps to sort of create this other world. It's a lot to follow, but it is enjoyable.
+assistant: Do you like the movie Batman v Superman: Dawn of Justice ?
+user: It's not my favorite. No.
+assistant: Why do you dislike this movie? Please give 2 reasons.
+user: Sure. I think it was poorly thought out. I think the So I think it was poorly thought out, and the writing, because it was poorly thought out, 
+suffered. Like they didn't They knew they were trying to do a movie that included both characters, so they were trying for something interesting, but they didn't have anything that really connected them that warranted making a movie.
+assistant: Thank you for your feedback. Enjoy your evening.
+user: Thanks. You, too.
+Evaluation JSON:
+{
+  "TaskSuccess": {"score": 55, "justification": "The assistant followed the user's preferences and asked relevant questions, but there was no clear resolution or actionable next steps as this was more of a conversational survey."},
+  "HelpfulnessRelevance": {"score": 60, "justification": "The assistant's questions were mostly relevant to the user's responses, though some were repetitive and lacked depth or follow-up."},
+  "FaithfulnessAccuracy": {"score": 70, "justification": "All responses were factually correct and grounded in the user's input, with no hallucinations or misinformation."},
+  "EmpathyPoliteness": {"score": 65, "justification": "The assistant maintained a polite tone but showed minimal empathy or acknowledgment of the user's feelings beyond basic courtesies."},
+  "ComplianceSafety": {"score": 90, "justification": "There were no policy violations, unsafe advice, or PII issues throughout the conversation."},  
+  "EfficiencyEffort": {"score": 55, "justification": "The dialogue was somewhat repetitive and could have been more concise, with several unnecessary clarifying questions."},
+  "FluencyCoherence": {"score": 65, "justification": "The conversation was mostly coherent and grammatically correct, though some questions were abrupt and the flow was occasionally stilted."},
+  "OverallExperience": {"score": 60, "justification": "The overall score is a rounded average of the individual metrics, reflecting a functional but 
+unremarkable customer service experience with room for improvement in engagement and efficiency."}
+}
+
+--- Few-Shot Example ---
+Dialogue:
+assistant: What kind of movies to you like, and why do you like this type of movie?
+user: Sometimes I really like sand and sword period pieces.
+user: I like them because you know, they usually have some sort of like historical content to them, and they're usually action-oriented, too.
+assistant: Can you name a particular movie that you like?
+user: Probably the best one that comes in mind is Ben-Hur.
+assistant: Can you give me a couple of reasons why you like this movie?
+user: Oh, it's totally epic. I mean, it's really like this incredible story that follows follows one man as he goes on an adventure, basically. I mean, it's It's tragic too, along the way. There's so many parts to it. The chariot race in it though is really memorable.
+assistant: Can you name a movie that you do not like?
+user: Let me think for a second, about a movie I did not like. Yeah, I don't know if I was really that big of a fan of Demolition Man.
+assistant: What do you dislike about this movie? Please give me 2 reasons.
+user: Well, I thought the castings were kind of over the top, and I thought that the I thought that the story was kind of corny. It really felt forced.
+assistant: Do you like the movie Night at the Museum: Secret of the Tomb?
+user: I know of the franchise. I can't remember if I've seen it or not. I think I saw the first one in the series, but I don't remember how it goes. 
+assistant: Would you go see it?
+user: I would possibly see that if I was in the right mood. It seems light and fun.
+assistant: Do you like the movie Guardians of the Galaxy Vol. 2?
+user: I liked both Vol. 1 and Vol. 2. I thought they were both really well done. I like I really like the ending to Guardians of the Galaxy Vol. 2.  
+assistant: What do you like about this movie? 2 reasons please
+user: I really liked how they treated the the character's father at the end. And I really liked just the humor. The humor of the movie was it was pretty funny all things considered.
+assistant: Do you like the movie The Purge?
+user: You know what? I don't like that movie at all. I thought it was Yeah, I did not like it.
+assistant: Can you give me a couple of reasons why you dislike this movie?
+user: Yeah, I mean the biggest reason for me is that it sort of sets up this premise where it's like it's legal to kill people or do whatever you want on a particular day, but it doesn't really You know, it doesn't really say there aren't consequences to your actions. So it's kind of like a It's kind of like a It's kind of like a stupid premise, you know? I just don't think it's realistic. And I also
+user: think that like you know, the the part of the plot really didn't work well.
+Evaluation JSON:
+{
+  "TaskSuccess": {"score": 50, "justification": "The assistant asked questions but did not resolve any specific customer issue or provide actionable 
+next steps."},
+  "HelpfulnessRelevance": {"score": 55, "justification": "The responses were mostly relevant to the user's answers but were generic and did not add value beyond prompting for more information."},
+  "FaithfulnessAccuracy": {"score": 60, "justification": "The assistant's responses were factually correct but limited to repeating or requesting information without providing new or insightful content."},
+  "EmpathyPoliteness": {"score": 60, "justification": "The tone was neutral and polite, but there was little evidence of empathy or acknowledgment of the user's feelings or opinions."},
+  "ComplianceSafety": {"score": 80, "justification": "There were no policy violations, unsafe advice, or PII issues in the conversation."},
+  "EfficiencyEffort": {"score": 45, "justification": "The dialogue was repetitive and required the user to do most of the work, with little effort to streamline the conversation."},
+  "FluencyCoherence": {"score": 65, "justification": "The assistant's language was generally clear and coherent, though sometimes awkward or stilted 
+in phrasing."},
+  "OverallExperience": {"score": 53, "justification": "The overall score is a rounded average of the individual metrics, reflecting a basic, compliant, but unhelpful and inefficient dialogue (mean ≈ 59, weighted down for low task success and efficiency)."}
+}
+
+--- Few-Shot Example ---
+Dialogue:
+assistant: What kinds of movies do you like?
+user: I like all kinds, but I really particularly like drama you know, like feel good movies. You know, Something like Forest Gump. Something with a 
+good story and you know, it just kind of leaves you with a good feeling at the end.
+assistant: Why do you like dramas?
+user: You know, it's just the escape of it all, and a good drama has just enough reality in it to
+user: to, you know, make you think it could happen to you, you know, it's kind of believable. It's not like a lot of the fantasy, we totally like some of those too, but, you know, it's the drama you can almost picture yourself in the movie a lot of times or people you know and stuff like that. Kind of easy to relate to.
+assistant: What was it about Forest Gump that you liked?
+user: How he kind of fell into all that stuff that he did, like he didn't really plan it. He just It just kind of happened to him. It's hard not to like that movie.
+assistant: Well, would there be a particular movie you did not like?
+user: I don't know about a particular movie. I'm not a big fan of documentaries, usually. I mean, unless it's like Some of these true crime ones are 
+kind of good. Like Making a Murderer, but it's not a movie, but it's you know, a series. Something like that is is I do like those, but just not Some of the other ones. You know, I'm just not a big fan of watching animals or
+user: You know, rain forest and stuff like that.
+user: I kind of like you know You know, just regular type movies.
+assistant: So, have you then seen die hard?
+user: I've seen all the Die Hards. I think there's a new one coming out. And even though the last one really wasn't very good, although it did have Timothy Olyphant in it, I will definitely see the the next one. I'll keep watching them probably as long as they make them, cuz they're just so fun. It's a Christmas movie, you know, the first one.
+assistant: What was it about die hard you liked or dislike?
+user: Well, the first one's Just the story was You know, I mean it was kind out there, but it was Bruce Willis probably the main reason I like them. 
+I'm a fan of his, and the first one was just very clever, and the dialog and you know, the quippy remarks, all the crazy stuff that he did. It was just a fun movie to watch and
+user: You know, mainly coz they are fun they're just fun movies. I mean you know they could nothing like that could ever happen but its just fun to watch it on TV or on the screen.
+assistant: Wonderful. thank you for sharing. good bye
+Evaluation JSON:
+{
+  "TaskSuccess": {"score": 60, "justification": "The assistant did not resolve a specific customer issue or provide actionable next steps, as the conversation was more of a casual chat than a service interaction."},
+  "HelpfulnessRelevance": {"score": 65, "justification": "The responses were generally relevant to the user's comments but lacked depth or specific helpfulness beyond prompting further discussion."},
+  "FaithfulnessAccuracy": {"score": 80, "justification": "All responses were factually correct and grounded in the user's input, with no hallucinations or inaccuracies."},
+  "EmpathyPoliteness": {"score": 70, "justification": "The assistant maintained a polite tone and acknowledged the user's input, but showed limited empathy or emotional engagement."},
+  "ComplianceSafety": {"score": 100, "justification": "There were no policy violations, unsafe advice, or PII issues in the conversation."},
+  "EfficiencyEffort": {"score": 60, "justification": "The conversation was somewhat repetitive and lacked clear direction, leading to unnecessary back-and-forth without a clear goal."},
+  "FluencyCoherence": {"score": 70, "justification": "The assistant's language was generally clear and coherent, though some responses were abrupt or lacked conversational flow."},
+  "OverallExperience": {"score": 67, "justification": "The overall score is a rounded average of the individual metrics, reflecting a generally safe 
+and accurate but only moderately helpful and engaging experience."}
+}
+
+=== Target Dialogue To Evaluate ===
+SYSTEM: Do you like movies like Thor?
+USER: No, I don't like Thor.
+SYSTEM: Ok. What is it about this type of movie that you dislike?
+USER: I don't like all the
+USER: Like the I don't know. Like is it voice acting?
+USER: in that controls the characters
+SYSTEM: Can you say a little more about that please?
+USER: Yeah, so I don't know I guess the acting was bad.
+USER: I was wondering if it's voice acting that controls the You wouldn't know.
+SYSTEM: Do you like movies like Star Wars?
+USER: Yeah, I liked the first Star Wars but I haven't seen I haven't seen any of them since that first one.
+USER: Yeah, I liked the first one.
+SYSTEM: Ok. What is it about this type of movie that you like?
+USER: It had a good sound track.
+USER: The acting was good. It was a good story.
+SYSTEM: Can you say a little more about that please?
+USER: What do you want to know about it?
+SYSTEM: anything else that you like about that movie any other details
+USER: Yeah I like, the casting was pretty good I guess. Yeah, the one guy that was the main character once you get that you're done for life. He's making a lot of money from that movie I don't know how it works, but yeah I like Star Wars.
+SYSTEM: Do you like movies like Good Will Hunting?
+USER: Is that the thing what that what the
+USER: With the guy and the therapist, is it that movie?
+SYSTEM: yes Robin Williams at the Espy therapist
+USER: Yeah, I like that movie. I think that was pretty good.
+SYSTEM: Ok. What is it about this type of movie that you like?
+USER: I like the story-driven plot
+USER: As opposed to like the Thor type movies where you have like the action driven plot.
+SYSTEM: Can you say a little more about that please?
+USER: Yeah, I like the story I like the story narratives. I like that like kind of like in About Schmidt there's a story based narrative and I like that there.
+SYSTEM: Thank you. Nice weekend.
+USER: All right. You too.

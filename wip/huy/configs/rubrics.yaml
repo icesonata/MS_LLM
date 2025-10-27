@@ -1,0 +1,116 @@
+version: 1.0.0
+name: ccpe_evaluator_v1
+description: >-
+  Rubric used to evaluate customer service dialogues. Scores are 0..100 for each
+  criterion. Guidance, examples and weights are provided to enable reproducible
+  automated and human evaluation.
+  
+channels:
+  - voice
+  - chat
+  - email
+metrics:
+  TaskSuccess:
+    desc: "Did the AGENT fulfill the user’s goal / elicit the requested content?"
+    scale:
+      min: 0
+      max: 100
+    weight: 0.4
+    guidance: |
+      100: Full fulfillment + direct evidence of successful completion (explicit user answer that addresses the system request). CCPE example (dialogue_id 335):* SYSTEM: "got it, can you name a specific movie you really liked?"  USER: "Sure, Best in Show is one of my absolute favorites.".
+      80: Goal met but minor mismatch or no explicit confirmation. CCPE example (dialogue_id 25):* SYSTEM asks for movie; USER gives movie but agent offers a slightly different time/format.
+      60: Partial — agent only obtained part of requested info.
+      40: Attempted incorrectly — user must restate or correct.
+      20: Off-topic or failed (agent replies unrelated).
+    examples:
+      - "Provided exact steps to reset account and confirmed resolution."
+
+  HelpfulnessRelevance:
+    desc: "Practical usefulness / actionable or eliciting value."
+    scale:
+      min: 0
+      max: 100
+    weight: 0.15
+    guidance: |
+      100: Clear steps/alternatives or guided elicitation that yields usable info. *Example 335*: Series of prompts elicit multi-part detailed user reasons
+      80: Correct and relevant but lacks full steps.
+      60: Partial info; user must infer important steps.
+      40: Vague / generic prompts — no direction.
+      20: Misleading or irrelevant.
+
+  FaithfulnessAccuracy:
+    desc: "No contradictions; no hallucinated facts; claims grounded in dialogue."
+    scale:
+      min: 0
+      max: 100
+    weight: 0.15
+    guidance: |
+      100: All statements consistent with dialogue context (no contradictions). *Example 335*: user content remains consistent across turns
+      80: Minor numeric/format error.
+      60: Hedged claims ("I think") or uncertain statements.
+      40: Contradiction with user statement (agent states opposite).
+      20: Hallucination / false facts.
+
+  Understanding:
+    desc: "Agent’s correct interpretation of user's intent."
+    scale:
+      min: 0
+      max: 100
+    weight: 0.1
+    guidance: |
+      100: Understood on first turn; reply directly addresses intent. *Example 335:* System asks "why do you like comedies?" and user answers "I like to laugh. I like the lightheartedness of it, you know, nothing too serious, a true escape from everyday life. And just puts you in a good mood, and that's how I would prefer to be." —agent clearly interpreted intent
+      80: Needs one clarifying question then correct.
+      60: Partially misunderstood requiring user rephrase.
+      40: Major misunderstanding.
+      20: Completely off-topic.s
+
+  Empathy:
+    desc: "Politeness / emotional appropriateness."
+    scale:
+      min: 0
+      max: 100
+    weight: 0.1
+    guidance: |
+      100: Explicit empathy or appropriate emotional phrasing when needed ("I'm sorry to hear that..."). *(If no emotional content required, give 80 for politely phrased dialog.)*
+      80: Polite and friendly.
+      60: Neutral but not cold.
+      40: Robotic.
+      20: Rude / insensitive.
+
+  FluencyCoherence:
+    desc: "Clarity, grammar, coherence."
+    scale:
+      min: 0
+      max: 100
+    weight: 0.10
+    guidance: |
+      100: Natural, coherent sentences (easy to read). *Example 335:* user and system utterances are fluent
+      80: Minor grammar issues.
+      60: Noticeable awkward phrasing but understandable.
+      40: Choppy / repetitive, harms comprehension.
+      20: Unreadable / incoherent.
+
+aggregation:
+  method: weighted_mean
+  overall:
+    description: "OverallExperience is the weighted mean of the seven metrics, rounded to the nearest integer."
+    rounding: integer
+    output_field: OverallExperience
+
+format:
+  score_type: integer
+  per_metric: true
+  output_schema: |
+    {
+      "TaskSuccess": {"score": <20|40|60|80|100>, "justification": "<Explain briefly, referencing a specific line or behavior from the dialogue>"},
+      "HelpfulnessRelevance": {"score": <20|40|60|80|100>, "justification": "<Explain briefly, focusing on clarity and usefulness of the response>"},
+      "FaithfulnessAccuracy": {"score": <20|40|60|80|100>, "justification": "<Explain briefly, considering factual consistency and correctness>"},
+      "Understanding": {"score": <20|40|60|80|100>, "justification": "<Explain briefly, describing whether the agent understood the user's intent>"},
+      "Empathy": {"score": <20|40|60|80|100>, "justification": "<Explain briefly, describing the tone, politeness, or emotional awareness>"},
+      "FluencyCoherence": {"score": <20|40|60|80|100>, "justification": "<Explain briefly, considering grammar, coherence, and readability>"},
+      "OverallExperience": {"score": <20|40|60|80|100>, "justification": "<Weighted average of all criteria, rounded down to the nearest level according to the scale.>"}
+    }
+
+notes: |
+  - Use the guidance bands and examples to ensure inter-rater consistency.
+  - If a metric is not applicable due to missing information, annotate the justification and assign a conservative score.
