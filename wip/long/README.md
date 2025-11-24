@@ -1,58 +1,55 @@
-# CSAT Evaluation Pipeline
+# Evaluation Scripts
 
-A comprehensive pipeline for evaluating Customer Satisfaction (CSAT) scores from dialogue data using multiple language models.
+This directory contains scripts to evaluate LLM performance on dialogue datasets using various prompting techniques.
 
-## Features
+## Prerequisites
 
-- **Multi-language Support**: Handles both Chinese (JDDC) and English (MWOZ) datasets
-- **Multiple Model Support**: GPT-4, Claude, Llama, and mock models for testing
-- **Variance Analysis**: Multiple iterations per dialogue to measure prediction stability
-- **Comprehensive Metrics**: MAE, RMSE, correlation, accuracy metrics
-- **Detailed Reporting**: Generates reports with explanations and golden synthesis samples
-- **Visualization**: Creates plots for result analysis
+1.  **Python**: Ensure you have Python installed.
+2.  **Dependencies**: Install the required Python packages.
+    ```bash
+    pip install openai python-dotenv scikit-learn numpy tqdm
+    ```
+3.  **Environment Variables**:
+    Create a `.env` file in the root of the project (or ensure it exists) and add your Qwen API key:
+    ```
+    QWEN_API_KEY=your_api_key_here
+    ```
 
-## Installation
+## Usage
+
+### Running the Evaluation
+
+To run the evaluation pipeline:
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd MS_LLM
-
-
-### Advanced Usage
-
-```bash
-# Run on specific datasets with custom prompts
-python3 run.py \
-    --datasets JDDC MWOZ \
-    --sample-size 50 \
-    --iterations 3 \
-    --instruction-cn "评估客户满意度" \
-    --instruction-en "Evaluate satisfaction" \
-    --rules "Focus on resolution and empathy" \
-    --output-dir results \
-    --plot \
-    --verbose
+python run.py
 ```
 
-Dry-run
-```bash
-# Run with Gemini only
-python3 run.py \
-    --models gemini \
-    --datasets JDDC MWOZ \
-    --sample-size 1 \
-    --iterations 3 \
-    --output-dir results_gemini \
-    --verbose
-```
+This script will:
+1.  Load the dataset from `../../dataset/selected_dialogues.json`.
+2.  Apply various prompting techniques (Baseline, CoT, Barem, etc.).
+3.  Query the Qwen model.
+4.  Save the results in the `results/` directory.
+5.  Calculate and print metrics (MAE, MSE, RMSE, R2).
+
+**Options:**
+
+*   `--runs <number>`: Specify the number of times to run the evaluation (default is 1).
+    ```bash
+    python run.py --runs 3
+    ```
+
+### Analyzing Results
+
+The `run.py` script automatically calculates and prints metrics. However, you can also run the standalone evaluation script to re-calculate metrics from the saved results:
 
 ```bash
-python3 run.py \
-    --models gemini \
-    --datasets JDDC MWOZ \
-    --sample-size 1 \
-    --iterations 3 \
-    --output-dir results_gemini \
-    --verbose
+python evaluate.py
 ```
+
+## Directory Structure
+
+*   `run.py`: Main script to execute the evaluation.
+*   `evaluate.py`: Script to calculate metrics from saved results.
+*   `utils.py`: Utility functions for model interaction and data loading.
+*   `results/`: Directory where output JSON files are stored.

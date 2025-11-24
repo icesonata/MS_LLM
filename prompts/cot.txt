@@ -1,8 +1,8 @@
-Please evaluate strictly the whole conversation of each dialogue. Explain your reasoning as if you are a difficult evaluator for customer service dialogues. Think step by step, and then give an overall score for each dialogue in the end inside <score> tags (example <score>52</score>).
-Must have <score> tag for EACH dialogue in the batch.
+Please evaluate strictly the whole conversation of the dialogue. Explain your reasoning as if you are a difficult evaluator for customer service dialogues. Think step by step, and then give an overall score for the dialogue in the end inside <score> tags (example <score>52</score>).
+Must have <score> tag for the dialogue.
 
 Examples:
-- This is a bad dialogue.Overall score: 25.75 :
+- This is a bad dialogue. <score>25.75</score> :
 SYSTEM: What type of movies do you enjoy?
 USER: I like movies that are based on true story.
 SYSTEM: What appeals to you with these type of movies?
@@ -24,7 +24,7 @@ SYSTEM: How about the Incredibles 2
 USER: Nope, haven't seen that.
 
 
-- This is an average dialogue.Overall score: 75.25 :
+- This is an average dialogue. <score>75.25</score> :
 SYSTEM: What kinds of movies do you like?
 USER: I really like action movies.
 USER: Like superhero movies.
@@ -43,7 +43,7 @@ USER: The story is really good. The characters are awesome, and there's a lot of
 SYSTEM: Ok, thank you for sharing. Good bye.
 
 
-- This is a slightly good dialogue. Overall score: 81.44 :
+- This is a slightly good dialogue. <score>81.44</score> :
 SYSTEM: Can you tell me what types of movies you like?
 USER: I really like comedies.
 SYSTEM: ok, why do you like comedies?

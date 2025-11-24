@@ -1,315 +1,439 @@
-"""
-Main script to run CSAT evaluation experiments - Simplified for 7-criteria system with 1-5 scale comparison
-"""
-
-import argparse
 import os
-import time
-from pathlib import Path
-from typing import List
-from dataclasses import dataclass
+import json
+import re
+import numpy as np
 from tqdm import tqdm
-
-from models.implementations import ChatGPTModel, GeminiModel, QwenModel, MistralModel
-from pipeline import DatasetExperiment
 from dotenv import load_dotenv
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from utils import QwenModel, load_dataset, format_dialogue, load_prompt
+import argparse
 
+# Load environment variables
 load_dotenv()
 
+# Configuration
+DATASET_PATH = "/Users/icesonata/schools/llm/MS_LLM/dataset/selected_dialogues.json"
+PROMPTS_DIR = "/Users/icesonata/schools/llm/MS_LLM/prompts"
+OUTPUT_DIR = "/Users/icesonata/schools/llm/MS_LLM/wip/long2/results"
 
-@dataclass
-class Config:
-    models: List[str]
-    datasets: List[str]
-    sample_size: int
-    iterations: int
-    output_dir: str
-    plot: bool
-    verbose: bool
+TECHNIQUES = {
+    "Baseline": "baseline_origin.txt",
+    "CoT": "cot.txt",
+    "Barem": "barem.txt",
+    "Self-consistency": "self_consistency.txt",
+    "Multi agent debate": "multiagent_debate.txt",
+    "Auto CoT": "auto_cot.txt"
+}
 
+class TfidfEmbedder:
+    def __init__(self):
+        self.vec = TfidfVectorizer(max_features=2048)
+        self.fit = False
+        
+    def encode(self, texts):
+        if not self.fit:
+            m = self.vec.fit_transform(texts)
+            self.fit = True
+        else:
+            m = self.vec.transform(texts)
+        return m.toarray().astype("float32")
 
-def get_models(selected: List[str]) -> List:
-    """Initialize and return available models"""
-    model_configs = {
-        'chatgpt': (ChatGPTModel, "ChatGPT", {'api_key': os.getenv('OPENAI_API_KEY'), 'model_version': 'gpt-4o'}),
-        'gemini': (GeminiModel, "Gemini", {'api_key': os.getenv('GEMINI_API_KEY'), 'model_version': 'gemini-2.0-flash'}),
-        'qwen': (QwenModel, "Qwen", {'api_key': os.getenv('QWEN_API_KEY'), 'model_version': 'qwen3-30b-a3b-instruct-2507'}),
-        'mistral': (MistralModel, "Mistral", {'api_key': os.getenv('MISTRAL_API_KEY'), 'model_version': 'mistral-small-latest'})
+class ExampleRetriever:
+    def __init__(self, examples):
+        self.examples = examples
+        self.embedder = TfidfEmbedder()
+        self.example_texts = [ex['text'] for ex in examples]
+        self.example_embeddings = self.embedder.encode(self.example_texts)
+        
+    def retrieve(self, query_text, k=1):
+        query_embedding = self.embedder.encode([query_text])
+        scores = cosine_similarity(query_embedding, self.example_embeddings)[0]
+        top_k_indices = np.argsort(scores)[::-1][:k]
+        return [self.examples[i] for i in top_k_indices]
+
+def parse_barem_examples(barem_path):
+    with open(barem_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+        
+    examples = []
+    # Regex to find examples in barem.txt
+    # Pattern: (Example X — dialogue_id Y)... text ... Expected ... {json}
+    
+    # Split by example headers
+    parts = re.split(r'\(Example \d+ — dialogue_id \d+\)', content)
+    
+    # Skip the first part (intro)
+    for i in range(1, len(parts)):
+        part = parts[i]
+        
+        # Extract dialogue text (up to "Expected")
+        dialogue_match = re.search(r'(.*?)Expected', part, re.DOTALL)
+        if not dialogue_match:
+            continue
+        dialogue_text = dialogue_match.group(1).strip()
+        
+        # Extract JSON
+        json_match = re.search(r'(\{.*\})', part, re.DOTALL)
+        if not json_match:
+            continue
+        json_text = json_match.group(1).strip()
+        
+        # Clean up JSON text (remove trailing text if any)
+        # Find the last closing brace
+        last_brace = json_text.rfind('}')
+        if last_brace != -1:
+            json_text = json_text[:last_brace+1]
+            
+        try:
+            evaluation = json.loads(json_text)
+            
+            # Map keys to Auto CoT schema
+            mapped_eval = {}
+            key_map = {
+                "TaskSuccess": "TaskSuccess",
+                "Helpfulness": "HelpfulnessRelevance",
+                "Accuracy": "FaithfulnessAccuracy",
+                "Understanding": "Understanding",
+                "Empathy": "Empathy",
+                "Fluency": "FluencyCoherence",
+                "OverallExperience": "OverallExperience"
+            }
+            
+            for k, v in evaluation.items():
+                new_key = key_map.get(k, k)
+                mapped_eval[new_key] = v
+                
+            examples.append({
+                "text": dialogue_text,
+                "evaluation": mapped_eval
+            })
+        except json.JSONDecodeError:
+            print(f"Warning: Could not parse JSON for example {i}")
+            continue
+            
+    return examples
+
+def extract_json(text):
+    # Try to find JSON block
+    match = re.search(r'\{.*\}', text, re.DOTALL)
+    if match:
+        try:
+            return json.loads(match.group(0))
+        except json.JSONDecodeError:
+            pass
+    return None
+
+def extract_score(text, technique):
+    # Check for error response first
+    if "Error:" in text and "{" in text and "}" in text:
+         # It might be an API error JSON
+         pass
+
+    if technique == "CoT":
+        # Look for <score> tags
+        match = re.search(r'<score>\s*(\d+(?:\.\d+)?)\s*</score>', text)
+        if match:
+            return float(match.group(1))
+            
+        # Fallback: Look for "Overall score: X" pattern from few-shot examples
+        match = re.search(r'Overall score:\s*(\d+(?:\.\d+)?)', text, re.IGNORECASE)
+        if match:
+            return float(match.group(1))
+    
+    # Try to parse as JSON for other techniques
+    data = extract_json(text)
+    if data:
+        # Multi agent debate
+        if technique == "Multi agent debate":
+            if "referee_final" in data and "OverallExperience" in data["referee_final"]:
+                val = data["referee_final"]["OverallExperience"]
+                if isinstance(val, dict):
+                    return float(val.get("score", 0))
+                return float(val)
+        
+        # Others
+        if "OverallExperience" in data:
+            val = data["OverallExperience"]
+            if isinstance(val, dict):
+                return float(val.get("score", 0))
+            return float(val)
+
+    # Fallback regex for OverallExperience
+    match = re.search(r'"OverallExperience":\s*\{?\s*"score":\s*(\d+)', text)
+    if match:
+        return float(match.group(1))
+    
+    match = re.search(r'"OverallExperience":\s*(\d+)', text)
+    if match:
+        return float(match.group(1))
+
+    return None
+
+def calculate_metrics(y_true, y_pred):
+    if not y_true or not y_pred:
+        return None
+    
+    y_true = np.array(y_true)
+    y_pred = np.array(y_pred)
+    
+    mae = mean_absolute_error(y_true, y_pred)
+    mse = mean_squared_error(y_true, y_pred)
+    rmse = np.sqrt(mse)
+    r2 = r2_score(y_true, y_pred)
+    
+    return {
+        "MAE": mae,
+        "MSE": mse,
+        "RMSE": rmse,
+        "R2": r2,
+        "Count": len(y_true)
     }
+
+def construct_prompt(technique, template, dialogue_text, retriever=None):
+    if technique in ["Baseline", "Barem", "Self-consistency"]:
+        return template.replace("{{dialogue_transcript}}", dialogue_text)
     
-    # Add default config
-    for name, (cls, model_name, config) in model_configs.items():
-        config.update({'temperature': 0.3, 'max_tokens': 2000})
+    elif technique == "CoT":
+        # Append target dialogue
+        return template + f"\n\n- Target Dialogue:\n{dialogue_text}\n\nPlease evaluate this dialogue and provide the score inside <score> tags."
     
-    models = []
-    failed_models = []
+    elif technique == "Multi agent debate":
+        # Append target dialogue
+        return template + f"\n\n=== TARGET DIALOGUE ===\n{dialogue_text}\n\nExpected output:"
     
-    for name, (cls, model_name, config) in model_configs.items():
-        if 'all' in selected or name in selected:
+    elif technique == "Auto CoT":
+        # Dynamic retrieval
+        example_text = ""
+        if retriever:
+            retrieved_examples = retriever.retrieve(dialogue_text, k=1)
+            if retrieved_examples:
+                ex = retrieved_examples[0]
+                example_text = f"Dialogue:\n{ex['text']}\n\nEvaluation JSON:\n{json.dumps(ex['evaluation'], indent=2)}"
+        
+        # Replace the example section in template
+        # The template has "--- Few-Shot Example ---" followed by a static example
+        marker = "--- Few-Shot Example ---"
+        if marker in template:
+            parts = template.split(marker)
+            base_prompt = parts[0] + marker + "\n"
+            
+            if example_text:
+                # Use retrieved example
+                full_prompt = base_prompt + example_text + f"\n\n=== Target Dialogue To Evaluate ===\n{dialogue_text}"
+                return full_prompt
+            else:
+                # Fallback to static example if retrieval failed (shouldn't happen if pool exists)
+                return template + f"\n\n=== Target Dialogue To Evaluate ===\n{dialogue_text}"
+        else:
+             return template + f"\n\n=== Target Dialogue To Evaluate ===\n{dialogue_text}"
+    
+    return template
+
+def main():
+    parser = argparse.ArgumentParser(description="Run LLM evaluation")
+    parser.add_argument("--runs", type=int, default=1, help="Number of times to run the evaluation")
+    args = parser.parse_args()
+    n_runs = args.runs
+
+    # Load dataset
+    dialogues = load_dataset(DATASET_PATH)
+    
+    # Filter out few-shot examples used in prompts
+    few_shot_ids = [335, 25, 26]
+    test_dialogues = [d for d in dialogues if d.get('dialogue_id') not in few_shot_ids]
+    
+    print(f"Total dialogues: {len(dialogues)}")
+    print(f"Test dialogues: {len(test_dialogues)} (Excluded IDs: {few_shot_ids})")
+    print(f"Number of runs: {n_runs}")
+    
+    # Initialize Model
+    model = QwenModel()
+    print(f"Model initialized: {model.model_version}")
+    
+    # Create output directory
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+
+    # Initialize Retriever for Auto CoT
+    retriever = None
+    barem_path = os.path.join(PROMPTS_DIR, "barem.txt")
+    if os.path.exists(barem_path):
+        examples = parse_barem_examples(barem_path)
+        if examples:
+            retriever = ExampleRetriever(examples)
+            print(f"Initialized Auto CoT retriever with {len(examples)} examples.")
+        else:
+            print("Warning: No examples parsed from barem.txt")
+    else:
+        print("Warning: barem.txt not found for example retrieval")
+
+    # Load ground truth map
+    ground_truth_map = {}
+    for d in dialogues:
+        if 'average_score' in d:
+            ground_truth_map[d['dialogue_id']] = d['average_score']
+            
+    all_run_metrics = {tech: [] for tech in TECHNIQUES}
+    
+    for run_idx in range(1, n_runs + 1):
+        print(f"\n{'='*20} Run {run_idx}/{n_runs} {'='*20}")
+        
+        # Run evaluation
+        for technique, filename in TECHNIQUES.items():
+            print(f"\nRunning technique: {technique}")
+            
+            # Load prompt template
+            prompt_path = os.path.join(PROMPTS_DIR, filename)
             try:
-                if not config.get('api_key'):
-                    failed_models.append(f"{model_name}: Missing API key")
+                template = load_prompt(prompt_path)
+            except FileNotFoundError:
+                print(f"Warning: Prompt file {filename} not found. Skipping.")
+                continue
+                
+            if n_runs > 1:
+                technique_dir = os.path.join(OUTPUT_DIR, f"run_{run_idx}", technique.replace(" ", "_"))
+            else:
+                technique_dir = os.path.join(OUTPUT_DIR, technique.replace(" ", "_"))
+                
+            if not os.path.exists(technique_dir):
+                os.makedirs(technique_dir)
+                
+            for dialogue in tqdm(test_dialogues, desc=f"Evaluating {technique}"):
+                dialogue_id = dialogue.get('dialogue_id')
+                dialogue_text = format_dialogue(dialogue.get('turns', []))
+                
+                # Construct prompt
+                full_prompt = construct_prompt(technique, template, dialogue_text, retriever if technique == "Auto CoT" else None)
+                
+                # Generate response with retry
+                max_retries = 3
+                response = ""
+                for attempt in range(max_retries):
+                    response = model.generate(full_prompt)
+                    
+                    # Check if we can extract a score
+                    score = extract_score(response, technique)
+                    if score is not None:
+                        break
+                    
+                    # If we are here, extraction failed
+                    if attempt < max_retries - 1:
+                        # Optional: Add a small delay or log
+                        pass
+                
+                # Save result
+                output_file = os.path.join(technique_dir, f"{dialogue_id}.txt")
+                with open(output_file, "w", encoding="utf-8") as f:
+                    f.write(f"Dialogue ID: {dialogue_id}\n")
+                    f.write(f"Technique: {technique}\n")
+                    f.write("-" * 50 + "\n")
+                    f.write("PROMPT:\n")
+                    f.write(full_prompt)
+                    f.write("\n" + "-" * 50 + "\n")
+                    f.write("RESPONSE:\n")
+                    f.write(response)
+
+            # Evaluation Phase for this technique
+            print(f"\nEvaluating results for {technique}...")
+            y_true = []
+            y_pred = []
+            parsed_outputs = []
+            
+            files = [f for f in os.listdir(technique_dir) if f.endswith(".txt")]
+            for f in files:
+                try:
+                    dialogue_id = int(f.split(".")[0])
+                except ValueError:
                     continue
                 
-                model = cls(model_name, config)
-                models.append(model)
-                print(f"✓ {model_name} initialized")
+                # Ignore few-shot samples
+                if dialogue_id in few_shot_ids:
+                    continue
+                    
+                if dialogue_id not in ground_truth_map:
+                    continue
+                    
+                with open(os.path.join(technique_dir, f), 'r', encoding='utf-8') as file:
+                    content = file.read()
+                    
+                parts = content.split("RESPONSE:")
+                if len(parts) < 2:
+                    continue
+                    
+                response_text = parts[-1]
+                score = extract_score(response_text, technique)
+                json_data = extract_json(response_text)
                 
-            except Exception as e:
-                failed_models.append(f"{model_name}: {str(e)}")
-                print(f"✗ {model_name} failed: {e}")
-    
-    if failed_models:
-        print(f"\nFailed models:")
-        for failure in failed_models:
-            print(f"  - {failure}")
-        print(f"\nRequired environment variables:")
-        print(f"  OPENAI_API_KEY, GEMINI_API_KEY, QWEN_API_KEY, MISTRAL_API_KEY")
-    
-    if not models:
-        raise RuntimeError("No models initialized. Check API keys.")
-    
-    return models
-
-
-def get_dataset_info():
-    """Dataset information"""
-    return {
-        'JDDC': 'Chinese E-commerce Customer Service',
-        'MWOZ': 'English Multi-domain Task-oriented',
-        'CCPE': 'English Movie Preference Conversations'
-    }
-
-
-def create_output_directory_name(timestamp: int, model_name: str, model_version: str, 
-                                datasets: List[str], sample_size: int, iterations: int) -> str:
-    """Create descriptive directory name"""
-    # Clean model version (remove special characters)
-    clean_version = model_version.replace('-', '').replace('.', '')
-    
-    # Join datasets with underscore
-    datasets_str = '_'.join(datasets)
-    
-    # Sample size string
-    sample_str = f"{sample_size}s" if sample_size else "all"
-    
-    # Create directory name
-    dir_name = f"{timestamp}_{model_name}_{clean_version}_{datasets_str}_{sample_str}_{iterations}i"
-    
-    return dir_name
-
-
-def run_experiment(config: Config):
-    """Run the complete experiment"""
-    start_time = time.time()
-    
-    print("=" * 60)
-    print("CSAT EVALUATION EXPERIMENT")
-    print("7-criteria system with 1-5 scale comparison")
-    print("=" * 60)
-    
-    # Show configuration
-    print(f"Models: {config.models}")
-    print(f"Datasets: {config.datasets}")
-    print(f"Sample size: {config.sample_size or 'All'}")
-    print(f"Iterations: {config.iterations}")
-    print(f"Output: {config.output_dir}")
-    
-    # Dataset info
-    dataset_info = get_dataset_info()
-    print(f"\nDatasets:")
-    for dataset in config.datasets:
-        print(f"  {dataset}: {dataset_info.get(dataset, 'Unknown')}")
-    
-    # Initialize models
-    print(f"\nInitializing models...")
-    models = get_models(config.models)
-    
-    # Skip Mistral for Chinese datasets
-    if any(m.model_name == "Mistral" for m in models) and "JDDC" in config.datasets:
-        print("⚠️  Mistral will skip JDDC (Chinese not supported)")
-    
-    # Create output directories with descriptive names
-    timestamp = int(time.time())
-    output_dirs = {}
-    
-    for model in models:
-        # Get model version from config
-        model_version = model.config.get('model_version', 'unknown')
-        
-        dir_name = create_output_directory_name(
-            timestamp=timestamp,
-            model_name=model.model_name,
-            model_version=model_version,
-            datasets=config.datasets,
-            sample_size=config.sample_size,
-            iterations=config.iterations
-        )
-        
-        output_dirs[model.model_name] = str(Path(config.output_dir) / dir_name)
-        Path(output_dirs[model.model_name]).mkdir(parents=True, exist_ok=True)
-    
-    # Initialize experiment
-    experiment = DatasetExperiment(models, config.iterations)
-    
-    # Calculate total work
-    from dataloader import load_dataset
-    total_work = 0
-    dataset_sizes = {}
-    
-    for dataset in config.datasets[:]:  # Copy to allow modification
-        try:
-            dialogues = load_dataset(dataset)
-            size = min(config.sample_size, len(dialogues)) if config.sample_size else len(dialogues)
-            dataset_sizes[dataset] = size
-            
-            # Count work per model (skip Mistral for JDDC)
-            model_count = len(models)
-            if dataset == "JDDC":
-                model_count -= sum(1 for m in models if m.model_name == "Mistral")
-            
-            total_work += size * model_count
-            
-        except FileNotFoundError:
-            print(f"⚠️  Dataset {dataset} not found, skipping...")
-            config.datasets.remove(dataset)
-    
-    print(f"\nDataset sizes:")
-    for dataset, size in dataset_sizes.items():
-        print(f"  {dataset}: {size} samples")
-    print(f"Total evaluations: {total_work}")
-    
-    # Run experiments
-    print(f"\nRunning experiments...")
-    pbar = tqdm(total=total_work, desc="Processing", unit="eval")
-    
-    for dataset in config.datasets:
-        print(f"\n📊 Dataset: {dataset}")
-        
-        for model in models:
-            # Skip Mistral for Chinese datasets
-            if model.model_name == "Mistral" and dataset == "JDDC":
-                print(f"  ⏭️  Skipping {model.model_name} (Chinese not supported)")
-                continue
-            
-            print(f"  🤖 {model.model_name}: ", end="", flush=True)
-            
-            def progress_callback():
-                pbar.update(1)
-                pbar.set_description(f"{model.model_name} on {dataset}")
-            
-            try:
-                experiment.run_on_dataset_with_progress(
-                    dataset, 
-                    "Evaluate dialogue satisfaction", 
-                    "", 
-                    config.sample_size, 
-                    config.verbose, 
-                    model, 
-                    progress_callback
-                )
-                print("✅ Done")
+                # Convert score to 1-5 scale to match long1 logic
+                score_5 = score / 20.0 if score is not None and score != 0 else None
                 
-            except Exception as e:
-                print(f"❌ Failed: {e}")
-                # Skip remaining samples for this model-dataset combination
-                remaining = dataset_sizes[dataset]
-                for _ in range(remaining):
-                    pbar.update(1)
-    
-    pbar.close()
-    
-    # Save results
-    print(f"\n💾 Saving results...")
-    experiment.save_organized_results(output_dirs, config.plot)
-    
-    # Show summary
-    print(f"\n📈 RESULTS SUMMARY")
-    print("=" * 80)
-    
-    summary_df = experiment.get_summary()
-    if not summary_df.empty:
-        # Show key metrics including MSE
-        key_columns = ['Model', 'Dataset', 'MAE', 'MSE', 'RMSE', 'R²', 'Avg_Pred_1_5', 'Avg_GT_1_5']
-        display_df = summary_df[key_columns].round(3)
-        
-        print(display_df.to_string(index=False))
-        
-        # Best performing model per dataset
-        print(f"\n🏆 Best Performance (lowest MAE):")
-        for dataset in config.datasets:
-            dataset_results = summary_df[summary_df['Dataset'] == dataset]
-            if not dataset_results.empty:
-                best_model = dataset_results.loc[dataset_results['MAE'].idxmin()]
-                print(f"  {dataset}: {best_model['Model']} (MAE: {best_model['MAE']:.3f})")
-    else:
-        print("No results to display.")
-    
-    # Execution summary
-    total_time = time.time() - start_time
-    print(f"\n⏱️  Completed in {total_time:.1f}s")
-    
-    print(f"\n📁 Results saved to:")
-    for model_name, path in output_dirs.items():
-        print(f"  {model_name}: {path}")
-    
-    print(f"\n📋 Files generated per model:")
-    print(f"  - summary.csv (metrics overview)")
-    if config.datasets:
-        print(f"  - {config.datasets[0]}_detailed.txt (detailed report)")
-        print(f"  - {config.datasets[0]}_results.csv (per-sample results)")
-        print(f"  - {config.datasets[0]}_raw_outputs.json (model responses)")
+                parsed_outputs.append({
+                    "dialogue_id": dialogue_id,
+                    "extracted_score": score,
+                    "extracted_score_5": score_5,
+                    "ground_truth": ground_truth_map[dialogue_id],
+                    "model_output": json_data
+                })
+                
+                if score_5 is not None:
+                    y_true.append(ground_truth_map[dialogue_id])
+                    y_pred.append(score_5)
+            
+            # Save parsed outputs
+            if n_runs > 1:
+                eval_file = os.path.join(OUTPUT_DIR, f"run_{run_idx}", f"{technique.replace(' ', '_')}_eval.json")
+            else:
+                eval_file = os.path.join(OUTPUT_DIR, f"{technique.replace(' ', '_')}_eval.json")
+                
+            with open(eval_file, "w", encoding="utf-8") as f:
+                json.dump(parsed_outputs, f, indent=4)
+            
+            metrics = calculate_metrics(y_true, y_pred)
+            if metrics:
+                all_run_metrics[technique].append(metrics)
+                print(f"Technique: {technique}")
+                print(f"Count: {metrics['Count']}")
+                print(f"MAE: {metrics['MAE']:.4f}")
+                print(f"MSE: {metrics['MSE']:.4f}")
+                print(f"RMSE: {metrics['RMSE']:.4f}")
+                print(f"R2: {metrics['R2']:.4f}")
+            else:
+                print(f"Technique: {technique} - No valid predictions found.")
 
+    # Calculate and save aggregated summary
+    final_summary = []
+    print(f"\n{'='*20} Aggregated Results ({n_runs} runs) {'='*20}")
+    
+    for technique, metrics_list in all_run_metrics.items():
+        if not metrics_list:
+            continue
+            
+        agg_metrics = {"Technique": technique, "Runs": len(metrics_list)}
+        
+        # Calculate mean and std for each metric
+        for key in ["MAE", "MSE", "RMSE", "R2"]:
+            values = [m[key] for m in metrics_list]
+            agg_metrics[f"{key}_mean"] = float(np.mean(values))
+            agg_metrics[f"{key}_std"] = float(np.std(values))
+        
+        # Also average the count
+        counts = [m["Count"] for m in metrics_list]
+        agg_metrics["Count_mean"] = float(np.mean(counts))
+        
+        final_summary.append(agg_metrics)
+        
+        print(f"\nTechnique: {technique}")
+        print(f"MAE: {agg_metrics['MAE_mean']:.4f} ± {agg_metrics['MAE_std']:.4f}")
+        print(f"MSE: {agg_metrics['MSE_mean']:.4f} ± {agg_metrics['MSE_std']:.4f}")
+        print(f"RMSE: {agg_metrics['RMSE_mean']:.4f} ± {agg_metrics['RMSE_std']:.4f}")
+        print(f"R2: {agg_metrics['R2_mean']:.4f} ± {agg_metrics['R2_std']:.4f}")
+
+    # Save summary
+    summary_file = "evaluation_summary_aggregated.json" if n_runs > 1 else "evaluation_summary.json"
+    with open(os.path.join(OUTPUT_DIR, summary_file), "w", encoding="utf-8") as f:
+        json.dump(final_summary, f, indent=4)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description='CSAT Evaluation with 7-criteria system (1-5 scale comparison)',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  python run_v2.py --models chatgpt --datasets CCPE --sample-size 10
-  python run_v2.py --models all --datasets CCPE MWOZ --iterations 3
-  python run_v2.py --models gemini qwen --datasets all --plot
-        """
-    )
-    
-    parser.add_argument('--models', nargs='+', 
-                       choices=['chatgpt', 'gemini', 'qwen', 'mistral', 'all'], 
-                       default=['all'], 
-                       help='Models to evaluate (default: all)')
-    
-    parser.add_argument('--datasets', nargs='+', 
-                       choices=['JDDC', 'MWOZ', 'CCPE', 'all'], 
-                       default=['CCPE'], 
-                       help='Datasets to evaluate (default: CCPE)')
-    
-    parser.add_argument('--sample-size', type=int, default=None, 
-                       help='Limit samples per dataset (default: all)')
-    
-    parser.add_argument('--iterations', type=int, default=5, 
-                       help='Evaluation iterations per dialogue (default: 5)')
-    
-    parser.add_argument('--output-dir', type=str, default='results', 
-                       help='Output directory (default: results)')
-    
-    parser.add_argument('--plot', action='store_true', 
-                       help='Generate plots (requires matplotlib)')
-    
-    parser.add_argument('--verbose', action='store_true', 
-                       help='Verbose output')
-    
-    args = parser.parse_args()
-    
-    # Handle 'all' options
-    if 'all' in args.datasets:
-        args.datasets = ['JDDC', 'MWOZ', 'CCPE']
-    
-    config = Config(**vars(args))
-    
-    try:
-        run_experiment(config)
-    except KeyboardInterrupt:
-        print(f"\n\n⏹️  Experiment interrupted by user")
-    except Exception as e:
-        print(f"\n\n❌ Experiment failed: {e}")
-        raise
+    main()
