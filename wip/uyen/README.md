@@ -10,9 +10,9 @@ code.py – Main script that runs the pipeline.
 - barem_results_full_gemini_pro.json – Full evaluation results from Gemini.
 
 ⚙️ How It Works
-Read Prompt Loads the evaluation instructions from barem.txt.
+1. Read Prompt Loads the evaluation instructions from barem.txt.
 
-Read Dialogues Loads dialogue data from selected_dialogues.json. Each dialogue must include:
+2. Read Dialogues Loads dialogue data from selected_dialogues.json. Each dialogue must include:
 
 - dialogue_id
 
@@ -22,17 +22,17 @@ Read Dialogues Loads dialogue data from selected_dialogues.json. Each dialogue m
 
 - overall_scores (optional)
 
-Format Transcripts Converts each dialogue into a text format consistent with BAREM examples.
+3. Format Transcripts Converts each dialogue into a text format consistent with BAREM examples.
 
-Batch Processing Groups dialogues into batches (default: 10 per batch) and prepares them for Gemini.
+4. Batch Processing Groups dialogues into batches (default: 10 per batch) and prepares them for Gemini.
 
-Call Gemini Sends the formatted batch to Gemini (gemini-2.0-flash) for evaluation. Gemini returns a strict JSON array of results.
+5. Call Gemini: Sends the formatted batch to Gemini (gemini-2.0-flash) for evaluation. Gemini returns a strict JSON array of results.
 
-Parse & Validate Cleans the response, ensures it is valid JSON, and matches the number of dialogues.
+6. Parse & Validate Cleans the response, ensures it is valid JSON, and matches the number of dialogues.
 
-Extract Scores Collects the OverallExperience.score from each result and builds a summary.
+7. Extract Scores Collects the OverallExperience.score from each result and builds a summary.
 
-Save Outputs
+8. Save Outputs
 
 barem_results_summary_gemini_pro.json: compact summary with dialogue ID, average score, and model score.
 
@@ -59,3 +59,4 @@ selected_dialogues.json with dialogue data.
 4. Run the script:
 
 python code.py
+
